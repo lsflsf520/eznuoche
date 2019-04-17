@@ -1,9 +1,15 @@
 package com.xyz.eznuoche.entity;
 
+import java.util.Date;
+
+import org.apache.commons.lang.StringUtils;
+
 import com.xyz.tools.common.constant.Bool;
 import com.xyz.tools.common.constant.CommonStatus;
+import com.xyz.tools.common.utils.EncryptTools;
+import com.xyz.tools.common.utils.StringUtil;
 import com.xyz.tools.db.bean.BaseEntity;
-import java.util.Date;
+import com.xyz.tools.web.util.WebUtils;
 
 public class RegUser extends BaseEntity<Integer> {
     private Integer id;
@@ -17,6 +23,8 @@ public class RegUser extends BaseEntity<Integer> {
     private Bool sex;
 
     private String headImg;
+    
+    private String myCode;
 
     private String inviteUid;
 
@@ -73,6 +81,15 @@ public class RegUser extends BaseEntity<Integer> {
     public void setHeadImg(String headImg) {
         this.headImg = headImg == null ? null : headImg.trim();
     }
+    
+    public String getMyCode() {
+        return myCode;
+    }
+
+    public void setMyCode(String myCode) {
+        this.myCode = myCode == null ? null : myCode.trim();
+    }
+
 
     public String getInviteUid() {
         return inviteUid;
@@ -110,4 +127,25 @@ public class RegUser extends BaseEntity<Integer> {
     public Integer getPK() {
         return id;
     }
+    
+    public boolean isNormal() {
+    	return CommonStatus.Normal.equals(this.getState());
+    }
+    
+    public String getHidePhone() {
+    	return StringUtils.isBlank(this.getPhone()) ? null : StringUtil.stringHide(EncryptTools.phoneEncypt(this.getPhone()));
+    }
+    
+    public String getWellHeadImg() {
+    	return WebUtils.wellformUrl(StringUtils.isBlank(headImg) ? "/manual/defhead.png" : headImg);
+    }
+
+	
+	public String getShowName() {
+		return StringUtils.isBlank(this.getNickName()) ? this.getHidePhone() : this.getNickName();
+	}
+	
+	public String getMyRecLinkCode() {
+		return StringUtils.isBlank(this.getInviteUid()) || "0".equals(this.getInviteUid()) ? this.getId() + "" : this.getInviteUid() + "," + this.getId();
+	}
 }

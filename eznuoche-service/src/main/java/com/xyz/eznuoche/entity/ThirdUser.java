@@ -1,8 +1,9 @@
 package com.xyz.eznuoche.entity;
 
-import com.xyz.tools.common.constant.Bool;
-import com.xyz.tools.db.bean.BaseEntity;
 import java.util.Date;
+
+import com.xyz.tools.common.constant.Sex;
+import com.xyz.tools.db.bean.BaseEntity;
 
 public class ThirdUser extends BaseEntity<Integer> {
     private Integer id;
@@ -13,7 +14,7 @@ public class ThirdUser extends BaseEntity<Integer> {
 
     private String nickName;
 
-    private Bool sex;
+    private Sex sex;
 
     private String headImg;
 
@@ -55,11 +56,11 @@ public class ThirdUser extends BaseEntity<Integer> {
         this.nickName = nickName == null ? null : nickName.trim();
     }
 
-    public Bool getSex() {
+    public Sex getSex() {
         return sex;
     }
 
-    public void setSex(Bool sex) {
+    public void setSex(Sex sex) {
         this.sex = sex;
     }
 
