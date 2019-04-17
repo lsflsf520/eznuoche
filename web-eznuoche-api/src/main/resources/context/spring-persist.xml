@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:p="http://www.springframework.org/schema/p"
+    xmlns:cache="http://www.springframework.org/schema/cache" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+    xmlns:jee="http://www.springframework.org/schema/jee" xmlns:task="http://www.springframework.org/schema/task"
+    xmlns:tx="http://www.springframework.org/schema/tx" xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+    xmlns:aop="http://www.springframework.org/schema/aop" xmlns:repository="http://www.springframework.org/schema/data/repository"
+    xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd
+		http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd"
+    default-lazy-init="false">
+
+    <description>Spring公共配置 </description>
+
+    <!-- 使用annotation 自动注册bean, 并保证@Required、@Autowired的属性被注入 -->
+    <context:component-scan base-package="com.xyz.eznuoche,com.xyz.tools.web.common" use-default-filters="false" scoped-proxy="targetClass">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component" />
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository" />
+    </context:component-scan>
+    
+    
+    <!-- eznuoche  begin -->
+    <bean id="eznuocheSqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">  
+        <property name="dataSource">
+          <ref bean="eznuocheDataSource"/>
+        </property>  
+        <property name="plugins">
+          <array>
+            <bean class="com.github.miemiedev.mybatis.paginator.OffsetLimitInterceptor">
+              <property name="properties">
+                <value>dialectClass=com.xyz.tools.db.dialect.MySqlDialect</value>
+              </property>
+            </bean>
+            <bean class="com.xyz.tools.db.aop.ModifyInterceptor">
+              <property name="properties">
+                <value>msgTables=dict;</value>
+              </property>
+              <property name="activeMQMsgSender" ref="mqMsgSender" />
+              <property name="destination" ref="dbModifyQueueDestination" />
+            </bean>
+            <bean class="com.xyz.tools.db.aop.QueryInterceptor" />
+          </array>
+        </property>
+        <property name="mapperLocations">  
+            <list>
+              <value>classpath*:mapper/eznuoche/*Mapper.xml</value>
+            </list>
+        </property>
+   </bean> 
+    
+   <bean id="eznuocheSqlSessionTemplate" class="org.mybatis.spring.SqlSessionTemplate">    
+        <constructor-arg index="0" ref="eznuocheSqlSessionFactory" />    
+   </bean>  
+   
+   <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">  
+        <property name="basePackage" value="com.xyz.eznuoche" /> 
+        <property name="sqlSessionTemplateBeanName" value="eznuocheSqlSessionTemplate"/>  
+        <property name="markerInterface" value="com.xyz.tools.db.dao.IBaseDao"/>
+   </bean>
+    <!-- eznuoche end --> 
+    
+    <bean id="eznuocheTransactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="eznuocheDataSource" />
+    </bean>
+    <tx:annotation-driven transaction-manager="eznuocheTransactionManager" />
+    
+</beans>

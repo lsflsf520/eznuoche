@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+	<!-- 页面使用示例(也可以参看role.html页面的使用方法)： <#assign status=Value("common_status", 
+		"-1")> //定义变量 ${status!} //输出变量 -->
+
+	<bean id="dataDictService" class="com.xyz.tools.web.common.service.DataDictService">
+		<property name="loaders">
+			<list>
+			    <!-- 值为Map的样例配置，重点关注 valueName的配法；如果列是用函数来处理的，函数中不能有任何空格，因为获取列名的时候是以 英文逗号+空格 的方式来切分或者列的别名的 -->
+			      <!-- <bean class="com.xyz.tools.web.common.service.dictloader.TableDataDictLoader">
+					<property name="dataSource" ref="courseDataSource" />
+					<property name="tableName" value="subject" />
+					<property name="nsAlias" value="subject" />
+					<property name="keyName" value="code" />
+					<property name="valueName" value="name, parent_code, pinyin, next_exam_date" />
+					<property name="refreshTime" value="86400" />
+					<property name="condSql" value=" status = 'Normal' " />
+				  </bean>   -->
+			</list>
+		</property>
+	</bean>
+
+	<bean id="dictTool" class="com.xyz.tools.web.common.service.DictTool" />
+</beans>

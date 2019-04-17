@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.eznuoche.dao.BalanceDao" >
+  <resultMap id="BaseResultMap" type="com.xyz.eznuoche.entity.Balance" >
+    <id column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="wx_cnt" property="wxCnt" jdbcType="INTEGER" />
+    <result column="sms_cnt" property="smsCnt" jdbcType="INTEGER" />
+    <result column="tel_cnt" property="telCnt" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="last_uptime" property="lastUptime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="BaseColumnList" >
+    uid, wx_cnt, sms_cnt, tel_cnt, create_time, last_uptime
+  </sql>
+  <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="BaseColumnList" />
+    from balance
+    where uid = #{uid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPK" parameterType="java.lang.Integer" >
+    delete from balance
+    where uid = #{uid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xyz.eznuoche.entity.Balance" >
+    insert into balance (uid, wx_cnt, sms_cnt, 
+      tel_cnt, create_time, last_uptime
+      )
+    values (#{uid,jdbcType=INTEGER}, #{wxCnt,jdbcType=INTEGER}, #{smsCnt,jdbcType=INTEGER}, 
+      #{telCnt,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <update id="updateByPK" parameterType="com.xyz.eznuoche.entity.Balance" >
+    update balance
+    <set >
+      <if test="wxCnt != null" >
+        wx_cnt = #{wxCnt,jdbcType=INTEGER},
+      </if>
+      <if test="smsCnt != null" >
+        sms_cnt = #{smsCnt,jdbcType=INTEGER},
+      </if>
+      <if test="telCnt != null" >
+        tel_cnt = #{telCnt,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="lastUptime != null" >
+        last_uptime = #{lastUptime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where uid = #{uid,jdbcType=INTEGER}
+  </update>
+  <insert id="insertReturnPK" useGeneratedKeys="true" keyProperty="uid" parameterType="com.xyz.eznuoche.entity.Balance" >
+    insert into balance (uid, wx_cnt, sms_cnt, 
+      tel_cnt, create_time, last_uptime
+      )
+    values (#{uid,jdbcType=INTEGER}, #{wxCnt,jdbcType=INTEGER}, #{smsCnt,jdbcType=INTEGER}, 
+      #{telCnt,jdbcType=INTEGER}, #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List" >
+    insert into balance
+		(uid,wx_cnt,sms_cnt,tel_cnt,create_time,last_uptime)
+	values 
+	<foreach collection="list" item="item" separator="," index="index">
+		(#{item.uid,jdbcType=INTEGER},#{item.wxCnt,jdbcType=INTEGER},#{item.smsCnt,jdbcType=INTEGER},#{item.telCnt,jdbcType=INTEGER},#{item.createTime,jdbcType=TIMESTAMP},#{item.lastUptime,jdbcType=TIMESTAMP})
+	</foreach>
+  </insert>
+  <delete id="batchDel" >
+    		delete from balance
+			where uid in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")">
+				#{item,jdbcType=INTEGER}
+			</foreach>
+  </delete>
+  <update id="updateStatus" >
+    		update balance
+			set ${statusColName} = #{delStatusVal, jdbcType=INTEGER}
+			where uid in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")">
+				#{item,jdbcType=INTEGER}
+			</foreach>
+  </update>
+  <select id="findByPks" resultMap="BaseResultMap" >
+    		select 
+			<include refid="BaseColumnList" />
+			from balance
+			where uid in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")"> 
+					#{item,jdbcType=INTEGER}
+				</foreach>
+  </select>
+  <select id="findAll" resultMap="BaseResultMap" >
+    select
+		<include refid="BaseColumnList"/>
+	from balance
+	<where>
+		<trim suffixOverrides="and" >
+			<if test="uid != null and uid > 0" >
+				and uid = #{uid,jdbcType=INTEGER}
+			</if>
+			<if test="wxCnt != null and wxCnt > 0" >
+				and wx_cnt = #{wxCnt,jdbcType=INTEGER}
+			</if>
+			<if test="smsCnt != null and smsCnt > 0" >
+				and sms_cnt = #{smsCnt,jdbcType=INTEGER}
+			</if>
+			<if test="telCnt != null and telCnt > 0" >
+				and tel_cnt = #{telCnt,jdbcType=INTEGER}
+			</if>
+			<!--<if test="queryParam != null">
+				<if test="queryParam.startDate != null and queryParam.startDate != '' ">
+					and create_time &gt;= #{queryParam.startDate, jdbcType=VARCHAR} 
+				</if>
+				<if test="queryParam.endDate != null and queryParam.endDate != ''">
+					and create_time &lt; date_add(#{queryParam.endDate, jdbcType=VARCHAR},interval 1 day)
+				</if>
+				<if test="queryParam.keyword != null and queryParam.keyword != ''">
+					and (name like concat('%', #{queryParam.keyword, jdbcType=VARCHAR}, '%') or other_col like concat('%', #{queryParam.keyword, jdbcType=VARCHAR}, '%') )
+				</if>
+			</if>-->
+		</trim>
+	</where>
+  </select>
+</mapper>

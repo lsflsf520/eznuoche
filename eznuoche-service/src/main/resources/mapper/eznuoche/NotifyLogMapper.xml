@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xyz.eznuoche.dao.NotifyLogDao" >
+  <resultMap id="BaseResultMap" type="com.xyz.eznuoche.entity.NotifyLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="target_uid" property="targetUid" jdbcType="INTEGER" />
+    <result column="msg_type" property="msgType" jdbcType="CHAR" />
+    <result column="fail_reason" property="failReason" jdbcType="VARCHAR" />
+    <result column="notify_state" property="notifyState" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="BaseColumnList" >
+    id, uid, target_uid, msg_type, fail_reason, notify_state, create_time
+  </sql>
+  <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="BaseColumnList" />
+    from notify_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPK" parameterType="java.lang.Integer" >
+    delete from notify_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.xyz.eznuoche.entity.NotifyLog" >
+    insert into notify_log (id, uid, target_uid, 
+      msg_type, fail_reason, notify_state, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{targetUid,jdbcType=INTEGER}, 
+      #{msgType,jdbcType=CHAR}, #{failReason,jdbcType=VARCHAR}, #{notifyState,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <update id="updateByPK" parameterType="com.xyz.eznuoche.entity.NotifyLog" >
+    update notify_log
+    <set >
+      <if test="uid != null" >
+        uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="targetUid != null" >
+        target_uid = #{targetUid,jdbcType=INTEGER},
+      </if>
+      <if test="msgType != null" >
+        msg_type = #{msgType,jdbcType=CHAR},
+      </if>
+      <if test="failReason != null" >
+        fail_reason = #{failReason,jdbcType=VARCHAR},
+      </if>
+      <if test="notifyState != null" >
+        notify_state = #{notifyState,jdbcType=CHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <insert id="insertReturnPK" useGeneratedKeys="true" keyProperty="id" parameterType="com.xyz.eznuoche.entity.NotifyLog" >
+    insert into notify_log (id, uid, target_uid, 
+      msg_type, fail_reason, notify_state, 
+      create_time)
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{targetUid,jdbcType=INTEGER}, 
+      #{msgType,jdbcType=CHAR}, #{failReason,jdbcType=VARCHAR}, #{notifyState,jdbcType=CHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertBatch" parameterType="java.util.List" >
+    insert into notify_log
+		(id,uid,target_uid,msg_type,fail_reason,notify_state,create_time)
+	values 
+	<foreach collection="list" item="item" separator="," index="index">
+		(#{item.id,jdbcType=INTEGER},#{item.uid,jdbcType=INTEGER},#{item.targetUid,jdbcType=INTEGER},#{item.msgType,jdbcType=CHAR},#{item.failReason,jdbcType=VARCHAR},#{item.notifyState,jdbcType=CHAR},#{item.createTime,jdbcType=TIMESTAMP})
+	</foreach>
+  </insert>
+  <delete id="batchDel" >
+    		delete from notify_log
+			where id in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")">
+				#{item,jdbcType=INTEGER}
+			</foreach>
+  </delete>
+  <update id="updateStatus" >
+    		update notify_log
+			set ${statusColName} = #{delStatusVal, jdbcType=INTEGER}
+			where id in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")">
+				#{item,jdbcType=INTEGER}
+			</foreach>
+  </update>
+  <select id="findByPks" resultMap="BaseResultMap" >
+    		select 
+			<include refid="BaseColumnList" />
+			from notify_log
+			where id in 
+				<foreach collection="pks" item="item" separator="," open="(" close=")"> 
+					#{item,jdbcType=INTEGER}
+				</foreach>
+  </select>
+  <select id="findAll" resultMap="BaseResultMap" >
+    select
+		<include refid="BaseColumnList"/>
+	from notify_log
+	<where>
+		<trim suffixOverrides="and" >
+			<if test="id != null and id > 0" >
+				and id = #{id,jdbcType=INTEGER}
+			</if>
+			<if test="uid != null and uid > 0" >
+				and uid = #{uid,jdbcType=INTEGER}
+			</if>
+			<if test="targetUid != null and targetUid > 0" >
+				and target_uid = #{targetUid,jdbcType=INTEGER}
+			</if>
+			<if test="msgType != null" >
+				and msg_type = #{msgType,jdbcType=CHAR}
+			</if>
+			<if test="failReason != null and failReason != ''" >
+				and fail_reason = #{failReason,jdbcType=VARCHAR}
+			</if>
+			<if test="notifyState != null and notifyState != ''" >
+				and notify_state = #{notifyState,jdbcType=CHAR}
+			</if>
+			<!--<if test="queryParam != null">
+				<if test="queryParam.startDate != null and queryParam.startDate != '' ">
+					and create_time &gt;= #{queryParam.startDate, jdbcType=VARCHAR} 
+				</if>
+				<if test="queryParam.endDate != null and queryParam.endDate != ''">
+					and create_time &lt; date_add(#{queryParam.endDate, jdbcType=VARCHAR},interval 1 day)
+				</if>
+				<if test="queryParam.keyword != null and queryParam.keyword != ''">
+					and (name like concat('%', #{queryParam.keyword, jdbcType=VARCHAR}, '%') or other_col like concat('%', #{queryParam.keyword, jdbcType=VARCHAR}, '%') )
+				</if>
+			</if>-->
+		</trim>
+	</where>
+  </select>
+</mapper>

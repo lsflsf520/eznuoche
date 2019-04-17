@@ -1,0 +1,298 @@
+<#macro pager size="-1" pages="1" pageNum="1" create="" delete="" hideRefresh="N"  preHtml='' afterHtml=''>
+<!-- 页面大功能模块+分页模块
+        size: 数据总量
+        pages: 数据总页数
+        pageNum: 当前页码
+        create: 插入数据，传入JS函数
+        update: 修改数据,传入JS函数
+        delete： 批量删除，传入描述+后台controller地址
+ --> 
+<div style="height: 50px;"></div>
+<div style="width: 100%;position:fixed;height:50px;bottom:0px;background-color:#ffffff;">
+    <div class="fhui-admin-pagelist" style="height: 40px;">
+       <div id="actions" style="float:left;margin:10px 0px 0px 0px;">
+          <div class="l-list">
+              ${preHtml!}
+              <#if create?? && create!=''>
+                  <a class="layui-btn layui-btn-small" id="create" onclick="${create!}"><i class="fa fa-plus"></i>新增</a>
+              </#if>
+              <#if delete?? && delete!=''>
+                  <a class="layui-btn layui-btn-small" onclick="batchDel(${delete!})"><i class="fa fa-trash-o"></i>删除</a>
+              </#if>
+              <#if hideRefresh != "Y">
+                  <a class="layui-btn layui-btn-small do-action" id="_refreshBtn_" data-type="doRefresh" data-href=""><i class="fa fa-refresh"></i>刷新</a>
+              </#if>
+               ${afterHtml!}
+              <#if size?? && size!='-1'>
+                  <label style="margin:10px 10px 0px 0px;">
+                                                                         共<font color="blue">${size!}</font>条数据 ,当前第<font color="blue">${pageNum! }/${pages!}</font>页
+                  </label>
+              </#if>
+          </div>
+       </div><!-- actions -->
+     <if size?? && size!="-1">
+       <div id="commonPageDiv" class="l-list" style="float: right; margin-bottom: 10px;"></div>
+     </if>
+    </div>
+</div>
+
+<script>
+function selectPage(pageNum){
+  if(pageNum!=null){
+          $("#pageNum").val(pageNum);
+          //$("#search").click();
+          $("#search").closest('form').submit();
+  } else {
+          $("#pageNum").val(1);
+          //$("#search").click();
+          $("#search").closest('form').submit();
+  }
+}
+
+/**
+ * 批量删除
+ * desc : 操作描述
+ * href : 提交地址
+ */
+function batchDel(desc,href){
+	var url = href;
+	if (url) {
+	    //查出选择的记录
+	    if ($(".layui-table tbody input:checked").size() < 1) {
+	    	commonMessage.alertError("对不起，请选中您要操作的记录");
+	        return false;
+	    }
+	    var pks ="";
+	    var checkObj = $(".layui-table tbody input:checked");
+	    for (var i = 0; i < checkObj.length; i++) {
+	        if (checkObj[i].checked && $(checkObj[i]).attr("disabled") != "disabled"){
+	        	var id=$(checkObj[i]).attr("pk");
+	        	if(id!=null){
+	        		pks += id + ','; //如果选中，将value添加到变量idlist中    
+	        	}	
+	        }
+	    }
+	    var data = { "pks": pks };
+	    actions(url,data,null,desc,null,null);
+	} else {
+		commonMessage.alertError("未配置链接地址");
+	}
+}
+
+function refreshCurrPage(){
+  var url = $(this).data('href');
+  if (url) {
+      location.href = url;
+  } else if($("#search").length > 0){
+      $("#search").closest('form').submit();
+  } else {
+      location.href = location.href;
+  }
+}
+
+layui.use(['laypage'], function(){
+  var laypage = layui.laypage
+  laypage({
+         cont: 'commonPageDiv'
+         ,pages: ${pages!}
+         ,curr: ${pageNum!}
+         ,skip: true
+         ,jump: function(obj,first){
+                   if(first!=true){//是否首次进入页面  
+                     var currentPage = obj.curr;//获取点击的页码      
+                     selectPage(currentPage);
+                   }  
+                }
+   });
+});
+
+$("#search").on('click', function(e){
+  $("#pageNum").val("0");
+});
+
+$("#_refreshBtn_").click(refreshCurrPage);
+
+</script>
+</#macro>
+
+
+<#macro submit action btnLabel='' preHtml='' afterHtml=''>
+<div id="_submit_div_"></div>
+<script>
+layui.use(['form'], function(){
+	var form=layui.form();
+	var label = '${btnLabel!}'
+	$("#_submit_div_").html("${preHtml!}<button class='layui-btn layui-btn-small' "+ 
+					"lay-submit lay-filter='only' >${((btnLabel!'') == '')?string('保存', btnLabel)}</button>${afterHtml!}");
+	
+	if(typeof formChecker == "object"){
+	   form.verify(formChecker);
+	}
+
+	form.on('submit(only)', function(data){
+		MsgUtil.closeAll();
+		
+		if(typeof beforeSubmit == "function"){
+			var result = beforeSubmit();
+			if(typeof result != "undefined" && !result){
+				return false;
+			}
+		}
+		
+		${action!}
+		return false;
+	});
+});
+</script>
+</#macro>
+
+
+<#macro indselect secIndId='0'>
+  <div class="layui-form-item">
+	<label class="layui-form-label">行业类别</label>
+	<div class="layui-input-inline">
+	  <select name="indId" id="topIndSel" lay-filter="topIndSel">
+	    <#assign indMap=ValueMap("industry_top_id_name")>
+	    <#if indMap??>
+	     <#list indMap?keys as key>
+	      <option value="${key}" ${(((dbData.indId)!0)?string == key)?string("selected", "")}>${indMap["${key}"]}</option>
+	     </#list>
+	    </#if>
+	  </select>
+	</div>
+	<div class="layui-input-inline" id="secIndDiv">
+	</div>
+  </div>
+  
+  <script>
+    layui.use(['form'], function(){
+		var form=layui.form();
+		
+		form.on("select(topIndSel)", function(data){
+			var currIndId = data.value;
+			
+			loadSecInd(currIndId);
+		});
+		
+		function loadSecInd(indId){
+			NetUtil.ajaxload("${BASE_URI!}/mgr/base/dict/load.do?suffix=" + indId, function(result){
+				$("#secIndDiv").html("");
+				var selectHtml = '<select name="secIndId">' ;
+				 $(result.model).each(function(i, d){
+					 for(var k in d){
+						 selectHtml += '<option value="'+k+'" '+(k == ${(secIndId)!0} ? 'selected' : '')+'>'+d[k]+'</option>'; 
+					 }
+				 });
+				 selectHtml += "</select>";
+				 
+				 $("#secIndDiv").append(selectHtml);
+				 form.render("select");
+			});
+		}
+		
+		var initIndId = $("#topIndSel").val();
+		if(initIndId){
+			loadSecInd(initIndId);
+		}
+	 });
+  </script>
+</#macro>
+
+
+<#macro ueditor name="content" width=900 height=300 defcontent="" maxlength=2000 cnName="富文本框" config="">
+	<script type="text/javascript" charset="utf-8" src="${BASE_URI!}/static/plugins/ueditor/ueditor.config.js?_=${RES_VERSION!}"></script>
+    <script type="text/javascript" charset="utf-8" src="${BASE_URI!}/static/plugins/ueditor/ueditor.all.min.js"></script>
+    <!--建议手动加在语言，避免在ie下有时因为加载语言失败导致编辑器加载失败-->
+    <!--这里加载的语言文件会覆盖你在配置项目里添加的语言类型，比如你在配置项目里配置的是英文，这里加载的中文，那最后就是中文
+    <script type="text/javascript" charset="utf-8" src="${BASE_URI!}/static/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+     -->
+    <script id="editor_${name!}" type="text/plain" style="width:${width!}px;">${defcontent!}</script>
+     
+    <script type="text/javascript">
+        var ue_${name!} = UE.getEditor('editor_${name!}', {
+	    	autoHeightEnabled: true,
+	        autoFloatEnabled: true,
+	        initialFrameHeight: ${height!},
+	        ${config!}
+	    });
+        
+        function beforeSubmit(){
+          var text = ue_${name!}.getContent();
+          if(text.length > ${maxlength!2000}){
+        	  MsgUtil.warn("${cnName!}不能超过${maxlength!2000}个字符");
+        	  return false;
+          }
+       	  $("#${name!}").val(text);
+       	  return true;
+        }
+    </script>
+    <textarea style="display:none;" id="${name!}" name="${name!}">${defcontent!}</textarea>
+</#macro>
+
+<#macro treejs table=".tree" config="">
+<link rel="stylesheet" href="${STATIC_DOMAIN!}/public/plugins/treegrid/css/jquery.treegrid.css">
+<script type="text/javascript" src="${STATIC_DOMAIN!}/public/plugins/treegrid/jquery.cookie.js"></script>
+<script type="text/javascript" src="${STATIC_DOMAIN!}/public/plugins/treegrid/jquery.treegrid.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+    $('${table!}').treegrid({
+        'initialState': 'collapsed',
+        'saveState': true,
+        ${config!}
+      });
+  });
+</script>
+</#macro>
+
+<#--使用方法：
+  1、现在头部引入 <@treejs />
+  2、在页面任意合适位置定义一个名叫 linedata 的宏，具体参考如下：
+     <#macro linedata data>
+      <td>${(data.name)!}</td>
+      <td>${(data.status.descp)!}</td>
+      <td>${(data.priority)!0}</td>
+      <td>${(data.createTime)?string("yyyy-MM-dd HH:mm:ss")}</td>
+      <td>
+        <#if ((data.status)!"CLOSED") == 'CLOSED'>
+          <button class="layui-btn layui-btn-mini" onclick='NetUtil.confirmBeforeRequest("${BASE_URI!}/sys/depart/recover.do?pks=${(data.id)!}");'>开启</button>
+        <#else>
+          <button class="layui-btn layui-btn-mini" onclick='NetUtil.confirmBeforeRequest("${BASE_URI!}/sys/depart/close.do?pks=${(data.id)!}");'>关闭</button>
+        </#if>
+      </td>
+    </#macro>
+  3、在对应table的tbody标签中引入 <@tree children=xxx />, 其中prefix参数可不传
+-->
+<#macro tree children prefix="">
+  <#if children?? && children?size gt 0>
+   <#list children as d>
+     <tr class='treegrid-${prefix!}${(prefix != "")?string("_", "")}${d_index + 1} ${(prefix != "")?string("treegrid-parent-" + prefix, "")}'>
+       <@linedata data=d />
+     </tr>
+     <#if d.children?? && d.children?size gt 0>
+        <#list d.children as c>
+           <tr class='treegrid-${prefix!}${(prefix != "")?string("_", "")}${d_index + 1}_${c_index + 1} treegrid-parent-${prefix!}${(prefix != "")?string("_", "")}${d_index + 1}'>
+         <@linedata data=c />
+        </tr>
+        <#assign pfx=prefix + ((prefix != "")?string("_", "")) + (d_index + 1) + "_" + (c_index + 1)>
+        <@tree children=c.children prefix=pfx />
+        </#list>
+     </#if>
+   </#list>
+  </#if>
+</#macro>
+
+<#-- 
+  根据指定的树列表，循环列出旗下所有的子孙节点，组成一个select域的option 
+ 示例：<@selectTree children=departTree defId=dbData.parentId />
+-->
+<#macro selectTree children defId="0" required="T" valueKey="id" labelKey="name" prefix="">
+  <#if children??>
+     <#list children as c>
+      <option value='${c["${valueKey}"]}' ${((defId)?string == c[valueKey]?string)?string("selected", "")}>${prefix}${c["${labelKey}"]}</option>
+      <#if c.children??>
+        <#assign pfx=prefix + "-">
+        <@selectTree children=c.children required=required defId=defId valueKey=valueKey labelKey=labelKey prefix=pfx />
+      </#if>
+     </#list>
+  </#if>
+</#macro>
