@@ -1,0 +1,120 @@
+
+#plate_phone,#plate_smscode,#plate_invite_code{
+	width: 3rem;
+	color: #333;
+	display: inline-block;
+	margin: 0rem;
+	padding: 0rem;
+	height: 0.6rem;
+	border: 0;
+	font-size: 0.26rem;
+	font-family: HelveticaNeue;
+	color: rgba(132,132,132,1);
+	font-weight: 400;
+	text-align: right;
+}
+.panel{
+    width:340px;
+    padding:10px;
+    text-align: center;
+    background-color:#FF3C3C;
+    border-radius: 0 0 8px 8px;
+}
+h2{
+    color:#fff;
+    margin: 5px;
+}
+.activity{
+    width: 300px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    border-radius: 5px;
+}
+.activity ul{
+    top: 0px;
+    padding: 0;
+    color: #666;
+    position: relative;
+}
+.activity li{
+    height: 34px;
+    padding:0;
+    font-size: 12px;
+    line-height: 34px;
+    list-style: none;
+    overflow: hidden;
+}
+ .panel{
+    width:340px;
+    padding:10px;
+    text-align: center;
+    background-color:#FF3C3C;
+    border-radius: 0 0 8px 8px;
+}
+h2{
+    color:#fff;
+    margin: 5px;
+}
+.activity{
+    width: 300px;
+    margin: 0 auto;
+    position: relative;
+    overflow: hidden;
+    height: 30px;
+    border-radius: 5px;
+}
+.activity ul{
+    top: 0px;
+    padding: 0;
+    color: #666;
+    position: relative;
+}
+.activity li{
+    height: 34px;
+    padding:0;
+    font-size: 12px;
+    line-height: 34px;
+    list-style: none;
+}
+.swiper_wrap{
+ion: relative;
+: 695px;
+t: 30px;
+n: 0 auto;
+
+r_wrap ul{
+ion: relative;
+0;
+ 0;
+: 695px;
+: right;
+or: #444;
+-size: 14px;
+in-top: 1px;
+
+r_wrap ul li{
+height: 30px;
+ding-left: 24px;*/
+
+er_wrap .font_inner a{
+: #444;
+
+try {margin-bottom: 0rem;overflow: hidden;    align-items: center;    margin-bottom: 0.2rem;}
+.The_false.hover{background: #ccc;box-shadow: 4px 4px 10px 0 #ccc}
+
+#ew_zengj_zjied {
+	transform: translate3d(-375px, 0px, 0px) translateZ(0px); 
+	transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1); 
+	transition-duration: 0ms;
+}
+
+.guanyu {
+    margin: 0rem 0.35rem;
+    font-size: 0.28rem;
+    font-family: PingFangSC-Regular;
+    font-weight: 400;
+    color: rgba(49,49,49,1);
+    letter-spacing: 1px;
+}

@@ -8,7 +8,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.xyz.eznuoche.dao.RegUserDao;
 import com.xyz.eznuoche.entity.RegUser;
@@ -52,7 +51,6 @@ public class RegUserService extends AbstractBaseService<Integer, RegUser> {
 		return user.getPK();
 	}
     
-    @Transactional(value="baseTransactionManager")
 	public Integer doSave(RegUser user) {
     	user.setLastUptime(new Date());
 		if (user.getPK() == null) {
@@ -119,7 +117,7 @@ public class RegUserService extends AbstractBaseService<Integer, RegUser> {
 		return doReg(phone, StringUtil.stringHide(phone), password, parentIdStr);
 	}
 	
-	public RegUser doReg4ChannelUser(String phone, String nickName, String departIdStr, int channelId, String parentIdStr) {
+	public RegUser doReg4ChannelUser(String phone, String nickName, String parentIdStr) {
 		
 		return doReg(phone, nickName, null, StringUtils.isNotBlank(parentIdStr) ? parentIdStr : EzConstant.Def_Invite_Uid);
 	}

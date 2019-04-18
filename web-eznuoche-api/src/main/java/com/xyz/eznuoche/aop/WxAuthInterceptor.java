@@ -10,7 +10,7 @@ import com.xyz.tools.web.aop.AbstractInterceptor;
 import com.xyz.tools.web.util.WebUtils;
 import com.xyz.tools.web.util.WxTool;
 
-public class WxLoginInterceptor extends AbstractInterceptor {
+public class WxAuthInterceptor extends AbstractInterceptor {
 
 	@Override
 	protected boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler,

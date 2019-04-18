@@ -44,8 +44,8 @@
               <property name="properties">
                 <value>msgTables=dict;</value>
               </property>
-              <property name="activeMQMsgSender" ref="mqMsgSender" />
-              <property name="destination" ref="dbModifyQueueDestination" />
+              <!-- <property name="activeMQMsgSender" ref="mqMsgSender" />
+              <property name="destination" ref="dbModifyQueueDestination" /> -->
             </bean>
             <bean class="com.xyz.tools.db.aop.QueryInterceptor" />
           </array>

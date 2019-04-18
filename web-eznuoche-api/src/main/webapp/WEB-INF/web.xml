@@ -10,8 +10,8 @@
             classpath:/context/spring-dataSource.xml
             classpath:/context/spring-persist.xml 
             classpath:/context/spring-dict.xml
-            classpath:/context/spring-activemq.xml
-            <!-- classpath:/context/spring-dubbo-client.xml --> 
+            <!-- classpath:/context/spring-activemq.xml
+            classpath:/context/spring-dubbo-client.xml --> 
         </param-value>
 	</context-param>
 	

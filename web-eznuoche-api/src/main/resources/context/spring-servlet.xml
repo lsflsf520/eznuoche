@@ -120,27 +120,22 @@
 		</property>
 	</bean> -->
 	
-	<!-- <mvc:interceptors>
-	    <mvc:interceptor>
+	<mvc:interceptors>
+	    <!-- <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/error/**"/>
             <mvc:exclude-mapping path="/ping/pang.do"/>
-            <bean class="com.xyz.acl.aop.LoginInterceptor" />
-        </mvc:interceptor>
+            <bean class="com.xyz.tools.web.aop.SessionInterceptor" />
+        </mvc:interceptor> -->
         
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/error/**"/>
             <mvc:exclude-mapping path="/ping/pang.do"/>
-            <mvc:exclude-mapping path="/sys/menus.do"/>
-            <mvc:exclude-mapping path="/_mgr/**"/>
-            <mvc:exclude-mapping path="/swagger-ui.html"/>
-            <mvc:exclude-mapping path="/webjars/**"/>
-            <mvc:exclude-mapping path="/base/sign/polyv.do"/>
-            
-            <bean class="com.xyz.acl.aop.ACLInterceptor" />
+            <mvc:exclude-mapping path="/wx/**"/>
+            <bean class="com.xyz.eznuoche.aop.WxAuthInterceptor" />
         </mvc:interceptor>
         
-    </mvc:interceptors>  -->
+    </mvc:interceptors>
 
 </beans>
