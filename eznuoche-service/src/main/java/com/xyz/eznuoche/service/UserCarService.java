@@ -1,14 +1,17 @@
 package com.xyz.eznuoche.service;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.xyz.eznuoche.dao.UserCarDao;
 import com.xyz.eznuoche.entity.UserCar;
 import com.xyz.tools.common.constant.CommonStatus;
+import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.db.dao.IBaseDao;
 import com.xyz.tools.db.service.AbstractBaseService;
 
@@ -23,8 +26,17 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     }
 
     public Integer insertReturnPK(UserCar userCar) {
+    	userCar.setState(CommonStatus.Normal);
+    	userCar.setCreateTime(new Date());
+    	userCar.setLastUptime(new Date());
         userCarDao.insertReturnPK(userCar);
         return userCar.getPK();
+    }
+    
+    @Override
+    public boolean update(UserCar t) {
+    	t.setLastUptime(new Date());
+    	return super.update(t);
     }
 
     public Integer doSave(UserCar userCar) {
@@ -41,5 +53,18 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     	query.setState(CommonStatus.Normal);
     	
     	return this.findByEntity(query, "id.desc");
+    }
+    
+    public Integer saveCarNum(int uid, String plateNo) {
+    	if(StringUtils.isBlank(plateNo)) {
+    		LogUtils.warn("plateNo cannot be null to save");
+    		return 0;
+    	}
+    	
+    	UserCar updata = new UserCar();
+    	updata.setUid(uid);
+    	updata.setPlateNo(plateNo);
+    	
+    	return this.doSave(updata);
     }
 }

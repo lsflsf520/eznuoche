@@ -4,7 +4,7 @@
     <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
-		<title>车辆保险_华新永康保险网</title>
+		<title>EZ挪车</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -69,15 +69,7 @@
 			<div class="tit_com">
 				<div class="content_min">
 					<ul>
-						<li class="flex">
-							<div class="plate">车牌号码</div>
-							<div class="select flex">
-								<span class="selectVal" onselectstart="return false">湘</span>
-								<i class="xl-icon iconfont icon-jiantou-xia"></i>
-							</div>
-							<input type="text" id="plate_number" value="" class="plate_number_list" placeholder="请输入车牌号码">
-							
-						</li>
+					  <#if (needBindPhone?false)>
 						<li class="flex">
 							<div class="plate">手机号</div>
 							<div class="plate_dex flex">
@@ -101,19 +93,34 @@
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
+					  <#else>
+					    <li>我的车牌：</li>
+					   <#list myCars as item>
+					    <li>${item!}</li>
+					   </#list>
+					  </#if>
+					  
+					    <li class="flex">
+							<div class="plate">车牌号码</div>
+							<div class="select flex">
+								<span class="selectVal" onselectstart="return false">湘</span>
+								<i class="xl-icon iconfont icon-jiantou-xia"></i>
+							</div>
+							<input type="text" id="plate_number" value="" class="plate_number_list" placeholder="请输入车牌号码">
+						</li>
 					</ul>
 					
 					<div class="The_false">
-						立即报价
+						提交
 					</div>
 				</div>	
 			</div>
 			
-				<div style="margin: 0rem 0.35rem;">
-					<p>活动说明：</p>
-					<p>1、提交自己的号牌和手机号，您将获得3次免费短信和3次免费语音通知挪车机会。</p>
-					<p>2、将本页面分享给好友，邀请好友提交号牌和手机号，您将获得10次免费短信和10次免费语音通知挪车机会。</p>
-				</div>
+			<div style="margin: 0rem 0.35rem;">
+				<p>活动说明：</p>
+				<p>1、提交自己的号牌和手机号，您将获得3次免费短信和3次免费语音通知挪车机会。</p>
+				<p>2、将本页面分享给好友，邀请好友提交号牌和手机号，您将获得10次免费短信和10次免费语音通知挪车机会。</p>
+			</div>
 		</div>
 		
 <script src="/static/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
