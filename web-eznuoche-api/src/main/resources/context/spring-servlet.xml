@@ -126,6 +126,7 @@
             <mvc:exclude-mapping path="/error/**"/>
             <mvc:exclude-mapping path="/ping/pang.do"/>
             <mvc:exclude-mapping path="/wx/**"/>
+            <mvc:exclude-mapping path="/sms/**"/>
             <bean class="com.xyz.eznuoche.aop.WxAuthInterceptor" />
         </mvc:interceptor>
         
@@ -134,6 +135,7 @@
             <mvc:exclude-mapping path="/error/**"/>
             <mvc:exclude-mapping path="/ping/pang.do"/>
             <mvc:exclude-mapping path="/toIndex.do"/>
+            <mvc:exclude-mapping path="/sms/**"/>
             <bean class="com.xyz.tools.web.aop.SessionInterceptor" />
         </mvc:interceptor>
         

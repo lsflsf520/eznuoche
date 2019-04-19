@@ -150,6 +150,17 @@
 			<artifactId>aspectjweaver</artifactId>
 		</dependency>
 		
+		<dependency>
+			<groupId>com.cloopen</groupId>
+			<artifactId>rest-sdk</artifactId>
+			<version>1.0</version>
+		</dependency>
+		<dependency>
+		  <groupId>com.cloopen</groupId>
+		  <artifactId>httpclient</artifactId>
+		  <version>1.0.0</version>
+		</dependency>
+		
 	</dependencies>
 
 	<build>
