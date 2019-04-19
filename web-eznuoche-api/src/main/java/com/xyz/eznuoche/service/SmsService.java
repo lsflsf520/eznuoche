@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Resource;
-import javax.jms.Destination;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
@@ -33,7 +32,6 @@ import com.xyz.tools.common.utils.JsonUtil;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.RegexUtil;
 import com.xyz.tools.common.utils.ThreadUtil;
-import com.xyz.tools.mq.sender.ActiveMQMsgSender;
 
 @Service
 public class SmsService {
@@ -41,18 +39,18 @@ public class SmsService {
 	@Resource
 	private MsgSendLogService msgSendLogService; 
 	
-	@Resource
-	private ActiveMQMsgSender mqMsgSender;
-	
-	@Resource(name = "smsQueueDestination")
-	private Destination smsQueueDestination;
+//	@Resource
+//	private ActiveMQMsgSender mqMsgSender;
+//	
+//	@Resource(name = "smsQueueDestination")
+//	private Destination smsQueueDestination;
 	
 	public ResultModel asyncSend(Sms... smsArr){
 		List<Sms> smsList = commonCheck(smsArr);
 		
 		for(Sms sms : smsList){
 			sms.init();
-			mqMsgSender.sendMsg(smsQueueDestination, sms);
+//			mqMsgSender.sendMsg(smsQueueDestination, sms);
 		}
 		
 		return new ResultModel(true);
