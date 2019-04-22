@@ -23,6 +23,7 @@ import com.xyz.tools.common.bean.ResultModel;
 import com.xyz.tools.common.utils.EncryptTools;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.RegexUtil;
+import com.xyz.tools.common.utils.StringUtil;
 import com.xyz.tools.common.utils.ThreadUtil;
 import com.xyz.tools.web.util.LogonUtil;
 import com.xyz.tools.web.util.LogonUtil.SessionUser;
@@ -60,33 +61,33 @@ public class IndexController {
 	@PostMapping("bindUser")
 	@ResponseBody
 	public ResultModel bindUser(HttpServletRequest request, HttpServletResponse response, String plateNo) {
-		SessionUser suser = ThreadUtil.getCurrUser();
-		if(suser == null) {
-			return new ResultModel("NOT_CHANNEL_LOGON", "当前您并没有通过第三方账号(比如微信)登录");
-		}
-		if(!suser.needBindPhone()) {
-			return new ResultModel("NOT_NEED_BIND", "当前无需绑定账号");
-		}
-		
-		if(StringUtils.isBlank(suser.getChannelUid())) {
-			return new ResultModel("ILLEGAL_STATE", "当前用户数据状态异常");
-		}
-		
-		ThirdUser channelUser = thirdUserService.loadByChannelUid(suser.getChannelUid());
-		if(channelUser == null) {
-			LogUtils.warn("not found channel user for channelUid %s", suser.getChannelUid());
-			return new ResultModel("NOT_EXIST", "当前第三方用户不存在");
-		}
-		
 		String phone = LogonUtil.getMobileOrEmail(request);
 		if(!RegexUtil.isPhone(phone)){
 			return new ResultModel("ILLEGAL_STATE", "数据状态不正常，请重试");
 		}
 		
+		ThirdUser channelUser = null;
+		SessionUser suser = ThreadUtil.getCurrUser();
+		if(suser != null) {
+			if(!suser.needBindPhone()) {
+				return new ResultModel("NOT_NEED_BIND", "当前无需绑定账号");
+			}
+			
+			if(StringUtils.isBlank(suser.getChannelUid())) {
+				return new ResultModel("ILLEGAL_STATE", "当前用户数据状态异常");
+			}
+			
+			channelUser = thirdUserService.loadByChannelUid(suser.getChannelUid());
+			if(channelUser == null) {
+				LogUtils.warn("not found channel user for channelUid %s", suser.getChannelUid());
+				return new ResultModel("NOT_EXIST", "当前第三方用户不存在");
+			}
+		}
+		
 		RegUser dbData = regUserService.loadByEncyptPhone(EncryptTools.phoneEncypt(phone)); 
 		if(dbData == null){
 			int inviteUid = ThreadUtil.parseDirectInviteUid(channelUser.getInviteUid());
-			String inviteUidStr = channelUser.getInviteUid();
+			String inviteUidStr = channelUser == null ? "0" : channelUser.getInviteUid();
 			if(inviteUid <= 0) {
 				RegUser inviter = null;
 				String inviteCode = ThreadUtil.getInviteCode();
@@ -100,7 +101,8 @@ public class IndexController {
 				inviteUidStr = RegUserService.buildInviteUid(inviter);
 			}
 			
-			dbData = regUserService.doReg4ChannelUser(phone, channelUser.getNickName(), inviteUidStr);
+			dbData = regUserService.doReg4ChannelUser(phone, channelUser == null || StringUtils.isBlank(channelUser.getNickName()) 
+					                     ? StringUtil.stringHide(phone) : channelUser.getNickName(), inviteUidStr);
 		} 
 		
 		channelUser.setUid(dbData.getId());

@@ -118,3 +118,21 @@ try {margin-bottom: 0rem;overflow: hidden;    align-items: center;    margin-bot
     color: rgba(49,49,49,1);
     letter-spacing: 1px;
 }
+
+.hori_ul {
+    display: flex;
+    /*flex-direction: row;*/
+    /*flex-wrap: nowrap;*/
+    flex-flow: row nowrap;
+    justify-content: center;
+}
+.hori_ul li {
+    list-style: none;
+    border: 2px solid #161EE8FF;
+    text-align: center;
+    line-height: 30px;
+    padding: 10px;
+    height: 30px;
+    width: 100px;
+    margin: 0 10px;
+}

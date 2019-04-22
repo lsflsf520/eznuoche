@@ -4,6 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xyz.tools.common.constant.Bool;
 import com.xyz.tools.common.constant.CommonStatus;
 import com.xyz.tools.common.utils.EncryptTools;
@@ -133,7 +134,12 @@ public class RegUser extends BaseEntity<Integer> {
     }
     
     public String getHidePhone() {
-    	return StringUtils.isBlank(this.getPhone()) ? null : StringUtil.stringHide(EncryptTools.phoneEncypt(this.getPhone()));
+    	return StringUtils.isBlank(this.getPhone()) ? null : StringUtil.stringHide(getDecryptPhone());
+    }
+    
+    @JsonIgnore
+    public String getDecryptPhone() {
+    	return EncryptTools.phoneEncypt(this.getPhone());
     }
     
     public String getWellHeadImg() {

@@ -8,9 +8,12 @@ import javax.annotation.Resource;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
+import com.github.miemiedev.mybatis.paginator.domain.Order.Direction;
 import com.xyz.eznuoche.dao.UserCarDao;
+import com.xyz.eznuoche.entity.RegUser;
 import com.xyz.eznuoche.entity.UserCar;
 import com.xyz.tools.common.constant.CommonStatus;
+import com.xyz.tools.common.exception.BaseRuntimeException;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.db.dao.IBaseDao;
 import com.xyz.tools.db.service.AbstractBaseService;
@@ -19,6 +22,8 @@ import com.xyz.tools.db.service.AbstractBaseService;
 public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     @Resource
     private UserCarDao userCarDao;
+    @Resource
+    private RegUserService regUserService;
 
     @Override
     protected IBaseDao<Integer, UserCar> getBaseDao() {
@@ -41,6 +46,16 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
 
     public Integer doSave(UserCar userCar) {
         if (userCar.getPK() == null) {
+        	if(StringUtils.isBlank(userCar.getPlateNo())){
+        		throw new BaseRuntimeException("NULL_PLATE_NO", "车牌号不能为空");
+        	}
+        	
+        	UserCar dbData = loadByPlateNo(userCar.getPlateNo());
+        	if(dbData != null) {
+        		RegUser regUser = regUserService.findById(dbData.getUid());
+        		throw new BaseRuntimeException("ALREADY_EXIST", "当前车牌号已被手机号为" + regUser.getHidePhone() + "的用户绑定");
+        	}
+        	
             return this.insertReturnPK(userCar);
         }
         this.update(userCar);
@@ -66,5 +81,13 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     	updata.setPlateNo(plateNo);
     	
     	return this.doSave(updata);
+    }
+    
+    public UserCar loadByPlateNo(String plateNo) {
+    	UserCar query = new UserCar();
+    	query.setPlateNo(plateNo);
+    	query.setState(CommonStatus.Normal);
+    	
+    	return this.findOne(query, "id", Direction.DESC);
     }
 }

@@ -1,5 +1,7 @@
 package com.xyz.eznuoche.controller;
 
+import java.util.Arrays;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,12 +13,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.xyz.eznuoche.dto.Sms;
 import com.xyz.eznuoche.entity.RegUser;
 import com.xyz.eznuoche.entity.ThirdUser;
+import com.xyz.eznuoche.entity.UserCar;
 import com.xyz.eznuoche.service.RegUserService;
+import com.xyz.eznuoche.service.SmsService;
 import com.xyz.eznuoche.service.ThirdUserService;
+import com.xyz.eznuoche.service.UserCarService;
 import com.xyz.tools.cache.redis.RedisDistLock;
 import com.xyz.tools.common.bean.ResultModel;
+import com.xyz.tools.common.constant.MsgType;
 import com.xyz.tools.common.constant.Sex;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.ThreadUtil;
@@ -38,6 +45,12 @@ public class WxUserController {
 	
 	@Resource
 	private ThirdUserService thirdUserService;
+	
+	@Resource
+	private UserCarService userCarService;
+	
+	@Resource
+	private SmsService smsService;
 	
 	@RequestMapping("doLogon")
 	public ModelAndView doLogon(HttpServletRequest request, HttpServletResponse response, String code){
@@ -130,8 +143,29 @@ public class WxUserController {
 	
 	@RequestMapping("/{msgType}/notify")
 	@ResponseBody
-	public ResultModel wxNotify(@PathVariable String msgType, String carNum) {
-		
+	public ResultModel wxNotify(@PathVariable MsgType msgType, String plateNo) {
+		if(StringUtils.isBlank(plateNo) || msgType == null) {
+			return new ResultModel("ILLEGAL_PARAM", "参数错误");
+		}
+		UserCar targetData = userCarService.loadByPlateNo(plateNo);
+		if(targetData == null){
+			return new ResultModel("NOT_EXIST", "这个家伙还没有把手机号登记到系统中，您可以点击右上角的 ... 按钮邀请他进行登记，您还可以获得5次免费短信通知和5次免费电话通知服务哦！");
+		}
+		RegUser targetUser = regUserService.findById(targetData.getUid());
+		if(targetUser == null || !targetUser.isNormal()) {
+			return new ResultModel("ILLEGAL_STATE", "数据状态异常，请联系客服或稍后重试！");
+		}
+		if(MsgType.WX.equals(msgType)) {
+			
+		} else if (MsgType.SMS.equals(msgType)) {
+			Sms sms = new Sms();
+			sms.setPhone(targetUser.getDecryptPhone());
+			sms.setTmplId("");
+			sms.setParams(Arrays.asList(plateNo));
+			smsService.send(sms);
+		} else if (MsgType.TEL.equals(msgType)) {
+			
+		}
 		
 		return new ResultModel(true);
 	}
