@@ -5,8 +5,8 @@ import java.util.Date;
 import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.xyz.tools.common.constant.Bool;
 import com.xyz.tools.common.constant.CommonStatus;
+import com.xyz.tools.common.constant.Sex;
 import com.xyz.tools.common.utils.EncryptTools;
 import com.xyz.tools.common.utils.StringUtil;
 import com.xyz.tools.db.bean.BaseEntity;
@@ -21,7 +21,7 @@ public class RegUser extends BaseEntity<Integer> {
 
     private String passwd;
 
-    private Bool sex;
+    private Sex sex;
 
     private String headImg;
     
@@ -67,11 +67,11 @@ public class RegUser extends BaseEntity<Integer> {
         this.passwd = passwd == null ? null : passwd.trim();
     }
 
-    public Bool getSex() {
+    public Sex getSex() {
         return sex;
     }
 
-    public void setSex(Bool sex) {
+    public void setSex(Sex sex) {
         this.sex = sex;
     }
 

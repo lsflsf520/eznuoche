@@ -4,6 +4,7 @@
   <resultMap id="BaseResultMap" type="com.xyz.eznuoche.entity.PayLog" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="uid" property="uid" jdbcType="INTEGER" />
+    <result column="msg_type" property="msgType" jdbcType="CHAR" />
     <result column="out_trade_no" property="outTradeNo" jdbcType="VARCHAR" />
     <result column="third_trade_no" property="thirdTradeNo" jdbcType="VARCHAR" />
     <result column="amount" property="amount" jdbcType="INTEGER" />
@@ -12,7 +13,7 @@
     <result column="last_uptime" property="lastUptime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="BaseColumnList" >
-    id, uid, out_trade_no, third_trade_no, amount, state, create_time, last_uptime
+    id, uid, msg_type, out_trade_no, third_trade_no, amount, state, create_time, last_uptime
   </sql>
   <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -25,18 +26,23 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.xyz.eznuoche.entity.PayLog" >
-    insert into pay_log (id, uid, out_trade_no, 
-      third_trade_no, amount, state, 
-      create_time, last_uptime)
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{outTradeNo,jdbcType=VARCHAR}, 
-      #{thirdTradeNo,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{state,jdbcType=CHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP})
+    insert into pay_log (id, uid, msg_type, 
+      out_trade_no, third_trade_no, amount, 
+      state, create_time, last_uptime
+      )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{msgType,jdbcType=CHAR}, 
+      #{outTradeNo,jdbcType=VARCHAR}, #{thirdTradeNo,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, 
+      #{state,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <update id="updateByPK" parameterType="com.xyz.eznuoche.entity.PayLog" >
     update pay_log
     <set >
       <if test="uid != null" >
         uid = #{uid,jdbcType=INTEGER},
+      </if>
+      <if test="msgType != null" >
+        msg_type = #{msgType,jdbcType=CHAR},
       </if>
       <if test="outTradeNo != null" >
         out_trade_no = #{outTradeNo,jdbcType=VARCHAR},
@@ -60,19 +66,21 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
   <insert id="insertReturnPK" useGeneratedKeys="true" keyProperty="id" parameterType="com.xyz.eznuoche.entity.PayLog" >
-    insert into pay_log (id, uid, out_trade_no, 
-      third_trade_no, amount, state, 
-      create_time, last_uptime)
-    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{outTradeNo,jdbcType=VARCHAR}, 
-      #{thirdTradeNo,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, #{state,jdbcType=CHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP})
+    insert into pay_log (id, uid, msg_type, 
+      out_trade_no, third_trade_no, amount, 
+      state, create_time, last_uptime
+      )
+    values (#{id,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER}, #{msgType,jdbcType=CHAR}, 
+      #{outTradeNo,jdbcType=VARCHAR}, #{thirdTradeNo,jdbcType=VARCHAR}, #{amount,jdbcType=INTEGER}, 
+      #{state,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertBatch" parameterType="java.util.List" >
     insert into pay_log
-		(id,uid,out_trade_no,third_trade_no,amount,state,create_time,last_uptime)
+		(id,uid,msg_type,out_trade_no,third_trade_no,amount,state,create_time,last_uptime)
 	values 
 	<foreach collection="list" item="item" separator="," index="index">
-		(#{item.id,jdbcType=INTEGER},#{item.uid,jdbcType=INTEGER},#{item.outTradeNo,jdbcType=VARCHAR},#{item.thirdTradeNo,jdbcType=VARCHAR},#{item.amount,jdbcType=INTEGER},#{item.state,jdbcType=CHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.lastUptime,jdbcType=TIMESTAMP})
+		(#{item.id,jdbcType=INTEGER},#{item.uid,jdbcType=INTEGER},#{item.msgType,jdbcType=CHAR},#{item.outTradeNo,jdbcType=VARCHAR},#{item.thirdTradeNo,jdbcType=VARCHAR},#{item.amount,jdbcType=INTEGER},#{item.state,jdbcType=CHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.lastUptime,jdbcType=TIMESTAMP})
 	</foreach>
   </insert>
   <delete id="batchDel" >
@@ -110,6 +118,9 @@
 			</if>
 			<if test="uid != null and uid > 0" >
 				and uid = #{uid,jdbcType=INTEGER}
+			</if>
+			<if test="msgType != null" >
+				and msg_type = #{msgType,jdbcType=CHAR}
 			</if>
 			<if test="outTradeNo != null and outTradeNo != ''" >
 				and out_trade_no = #{outTradeNo,jdbcType=VARCHAR}

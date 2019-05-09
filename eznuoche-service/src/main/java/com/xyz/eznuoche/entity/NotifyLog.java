@@ -1,8 +1,10 @@
 package com.xyz.eznuoche.entity;
 
+import java.util.Date;
+
+import com.xyz.eznuoche.constant.MsgStatus;
 import com.xyz.tools.common.constant.MsgType;
 import com.xyz.tools.db.bean.BaseEntity;
-import java.util.Date;
 
 public class NotifyLog extends BaseEntity<Integer> {
     private Integer id;
@@ -15,7 +17,7 @@ public class NotifyLog extends BaseEntity<Integer> {
 
     private String failReason;
 
-    private String notifyState;
+    private MsgStatus notifyState;
 
     private Date createTime;
 
@@ -59,12 +61,12 @@ public class NotifyLog extends BaseEntity<Integer> {
         this.failReason = failReason == null ? null : failReason.trim();
     }
 
-    public String getNotifyState() {
+    public MsgStatus getNotifyState() {
         return notifyState;
     }
 
-    public void setNotifyState(String notifyState) {
-        this.notifyState = notifyState == null ? null : notifyState.trim();
+    public void setNotifyState(MsgStatus notifyState) {
+        this.notifyState = notifyState;
     }
 
     public Date getCreateTime() {

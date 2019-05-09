@@ -16,6 +16,13 @@ import com.xyz.tools.common.utils.ThreadUtil;
 
 public class MsgUtil {
 	
+	public final static String SMS_HOST = BaseConfig.getValue("cloopen.server.host", "app.cloopen.com");
+	public final static String SMS_PORT = BaseConfig.getValue("cloopen.server.port", "8883");
+	public final static String SMS_ACCSID = BaseConfig.getValue("cloopen.server.accountsid", "8a216da85c62c9ad015c99f12cd512fe");
+	public final static String SMS_TOKEN = BaseConfig.getValue("cloopen.server.token", "725da49be57244498e7e7c29c8515230");
+	
+	public final static String APP_ID = BaseConfig.getValue("sms.appid");
+	
 	public static void checkValve(String account, MsgType msgType, boolean isBatch){
 		String value = null;
 		if(!isBatch && (ThreadUtil.getTraceMsgId() == null || !ThreadUtil.getTraceMsgId().startsWith("Job"))){ //批量发送不做单分钟内的总量检查

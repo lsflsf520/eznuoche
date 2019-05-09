@@ -1,13 +1,17 @@
 package com.xyz.eznuoche.entity;
 
+import java.util.Date;
+
+import com.xyz.tools.common.constant.MsgType;
 import com.xyz.tools.common.constant.OrdState;
 import com.xyz.tools.db.bean.BaseEntity;
-import java.util.Date;
 
 public class PayLog extends BaseEntity<Integer> {
     private Integer id;
 
     private Integer uid;
+
+    private MsgType msgType;
 
     private String outTradeNo;
 
@@ -35,6 +39,14 @@ public class PayLog extends BaseEntity<Integer> {
 
     public void setUid(Integer uid) {
         this.uid = uid;
+    }
+
+    public MsgType getMsgType() {
+        return msgType;
+    }
+
+    public void setMsgType(MsgType msgType) {
+        this.msgType = msgType;
     }
 
     public String getOutTradeNo() {

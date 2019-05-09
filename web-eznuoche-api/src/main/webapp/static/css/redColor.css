@@ -11,7 +11,7 @@ b.colorRed{  color: #F62030;  }
   font-size: .5rem;
   display: inline-block;
 }
-.tx_zhuczh .zh_tongysrh input[type=button]{color: #F62030;border-radius: .1rem;border-color: #F62030;}
+.plate_dex input[type=button]{color: #F62030;border-radius: .1rem;border-color: #F62030;}
 .sf_tongyxy input[type=button]{display: block;text-align: center;padding: 0;margin: 0;line-height: .8rem;height: .8rem;border-radius: .1rem;width: 100%;background: #F62030;color: #fff;}
 .xl-icon,.xl-iconNext{
   display: inline-block;

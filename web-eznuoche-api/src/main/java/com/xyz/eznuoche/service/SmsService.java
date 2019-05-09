@@ -93,12 +93,9 @@ public class SmsService {
 	public ResultModel send(Sms sms){
 		commonCheck(sms);
 		
-		String SMS_HOST = BaseConfig.getValue("cloopen.server.host", "app.cloopen.com");
-		String SMS_PORT = BaseConfig.getValue("cloopen.server.port", "8883");
-		String SMS_ACCSID = BaseConfig.getValue("cloopen.server.accountsid");
-		String SMS_TOKEN = BaseConfig.getValue("cloopen.server.token");
 		
-		if(StringUtils.isBlank(SMS_ACCSID) || StringUtils.isBlank(SMS_TOKEN)){
+		
+		if(StringUtils.isBlank(MsgUtil.SMS_ACCSID) || StringUtils.isBlank(MsgUtil.SMS_TOKEN)){
 			throw new BaseRuntimeException("LESS_CONFIG", "缺少配置", "cloopen.server.accountsid and cloopen.server.token should be config in application.properties");
 		}
 		if(!RegexUtil.isPhone(sms.getPhone())){
@@ -106,8 +103,8 @@ public class SmsService {
 		}
 
 		CCPRestSDK restAPI = new CCPRestSDK();
-		restAPI.init(SMS_HOST, SMS_PORT);// 初始化服务器地址和端口，格式如下，服务器地址不需要写https://
-		restAPI.setAccount(SMS_ACCSID, SMS_TOKEN);// 初始化主帐号和主帐号TOKEN
+		restAPI.init(MsgUtil.SMS_HOST, MsgUtil.SMS_PORT);// 初始化服务器地址和端口，格式如下，服务器地址不需要写https://
+		restAPI.setAccount(MsgUtil.SMS_ACCSID, MsgUtil.SMS_TOKEN);// 初始化主帐号和主帐号TOKEN
 		restAPI.setAppId(sms.getAppId());// 初始化应用ID
 		long startTime = System.currentTimeMillis();
 		HashMap<String, Object> result = restAPI.sendTemplateSMS(sms.getPhone(), sms.getTmplId(), sms.getParams() == null ? new String[0] : sms.getParams().toArray(new String[0])); //"164388"  new String[]{"尚方宝剑", "2"}

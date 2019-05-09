@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>支付中</title>
+<style type="text/css">
+.floatLwidth {
+    float: left;
+    width: 100%;
+}
+div, p {
+    word-break: break-all;
+    word-wrap: break-word;
+}
+* {
+    margin: 0;
+    padding: 0;
+}
+
+.bg-paying {
+    background-repeat: no-repeat;
+    background-position: left 0.3rem top;
+    background-image: url(/static/images/paying.png);
+    background-size: 1.2rem auto;
+}
+.padlr-40 {
+    padding-right: 0.4rem;
+    box-sizing: border-box;
+}
+.floatLwidth {
+    float: left;
+    width: 100%;
+}
+
+.line-40 {
+    line-height: 1.7;
+}
+
+
+.font-32 {
+    font-size: 0.32rem;
+}
+.radius-50 {
+    border-radius: 50px;
+}
+.bg-2492f1 {
+    background-color: #2492f1;
+}
+.text-c {
+    text-align: center;
+}
+.cor-fff {
+    color: #ffffff;
+}
+.line-90 {
+    line-height: 0.9rem;
+}
+.hei-90 {
+    height: 0.9rem;
+}
+.floatr {
+    float: right;
+}
+
+
+.cor-2492f1 {
+    color: #2492f1;
+}
+.line-90 {
+    line-height: 0.9rem;
+}
+.hei-90 {
+    height: 0.9rem;
+}
+.floatl {
+    float: left;
+}
+</style>
+</head>
+<body>
+  <div class="content">
+        <div class="floatLwidth" id="content">
+            <div class="floatLwidth padlr-40 borderbox bg-paying" style="padding-left: 1.8rem;margin-top:1rem;">
+                <p class="floatLwidth font-30 cor-999 line-40">支付完成前，请不要关闭此支付验证窗口。</p>
+                <p class="floatLwidth font-30 cor-999 line-40">支付完成后，请根据您支付的情况点击下面按钮。</p>
+            </div>
+            <div class="floatLwidth ksms padlr-30 padtb-20 bg-fff" style="margin-top: 0.25rem;">
+                <button id="payWrong" onclick="" type="button" class="floatl hei-90 line-90 bor-2492f1 radius-50 cor-2492f1 text-c font-32" style="width: 3.2rem;">支付遇到问题</button>
+                <button id="payOk" onclick="goorderlist()" type="button" class="floatr hei-90 line-90 bg-2492f1 radius-50 cor-fff text-c font-32" style="width: 3.2rem;">支付完成</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

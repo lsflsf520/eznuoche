@@ -16,6 +16,7 @@ import com.xyz.eznuoche.utils.EzConstant;
 import com.xyz.tools.cache.redis.RedisDistLock;
 import com.xyz.tools.common.constant.CommonStatus;
 import com.xyz.tools.common.constant.GlobalConstant;
+import com.xyz.tools.common.constant.Sex;
 import com.xyz.tools.common.exception.BaseRuntimeException;
 import com.xyz.tools.common.utils.BaseConfig;
 import com.xyz.tools.common.utils.EncryptTools;
@@ -34,14 +35,14 @@ import com.xyz.tools.web.util.LogonUtil.UserCls;
 public class RegUserService extends AbstractBaseService<Integer, RegUser> {
     @Resource
     private RegUserDao regUserDao;
+    @Resource
+    private IBalanceService balanceService;
 
     @Override
     protected IBaseDao<Integer, RegUser> getBaseDao() {
         return regUserDao;
     }
 
-    @Resource
-	private BalanceService balanceService;
     
     public Integer insertReturnPK(RegUser user) {
 		user.setCreateTime(new Date());
@@ -152,6 +153,7 @@ public class RegUserService extends AbstractBaseService<Integer, RegUser> {
 				}
 				updata.setInviteUid(StringUtils.isBlank(parentIdStr) ? EzConstant.Def_Invite_Uid : parentIdStr);
 				updata.setHeadImg(randHeadImg());
+				updata.setSex(Sex.U);
 				
 				String myCode = genMyCode("u");
 				updata.setMyCode(myCode);
@@ -188,9 +190,18 @@ public class RegUserService extends AbstractBaseService<Integer, RegUser> {
 		return GlobalConstant.STATIC_DOMAIN + "/manual/head/" + index + ".jpg";
 	}
 	
+	/**
+	 * 如果myCode是一个手机号，则根据手机号查询；否则根据推荐码查询
+	 * @param myCode
+	 * @return
+	 */
 	public RegUser loadByMyCode(String myCode) {
 		RegUser query = new RegUser();
-		query.setMyCode(myCode);
+		if(RegexUtil.isPhone(myCode)) {
+			query.setPhone(EncryptTools.phoneEncypt(myCode));
+		} else {
+			query.setMyCode(myCode);
+		}
 		
 		return this.findOne(query);
 	}

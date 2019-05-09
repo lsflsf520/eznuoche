@@ -123,4 +123,13 @@
 		</trim>
 	</where>
   </select>
+  
+  <update id="minusBalance">
+    update balance set ${fieldName} = ${fieldName} - 1, last_uptime=now() where uid = #{uid,jdbcType=INTEGER} and ${fieldName} > 0
+  </update>
+  
+  <update id="addBalance">
+    update balance set ${fieldName} = ${fieldName} + #{num,jdbcType=INTEGER}, last_uptime=now()  where uid = #{uid,jdbcType=INTEGER} 
+  </update>
+  
 </mapper>

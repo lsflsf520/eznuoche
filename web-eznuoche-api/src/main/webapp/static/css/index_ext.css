@@ -136,3 +136,29 @@ try {margin-bottom: 0rem;overflow: hidden;    align-items: center;    margin-bot
     width: 100px;
     margin: 0 10px;
 }
+
+.ne_kuaic {
+    padding-top: 10px;
+    overflow: hidden;
+}
+.ne_kuaic div{float: left;width: 30%;margin-top: 10px;margin-right: 5%;font-size: 18px;color: #ff7e01;height: 44px;line-height:44px;text-align: center;border-radius: 5px;border:1px solid #ff7e01;}
+.ne_kuaic div:enabled:active{color: #fff;background: #ff7e01;}
+.ne_kuaic div:nth-child(3n){margin-right: 0;}
+
+.jifenc_btn {
+    padding: 0 15px;
+    margin-top: 30px;
+}
+.jifenc_btn input[type=button].hover {
+    background: #1a191e;
+}
+.jifenc_btn input[type=button] {
+    display: block;
+    width: 100%;
+    font-size: 18px;
+    color: #fff;
+    background: #ccc;
+    border-radius: 5px;
+    cursor: pointer;
+    -webkit-appearance: button;
+}

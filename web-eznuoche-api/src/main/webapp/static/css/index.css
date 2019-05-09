@@ -23,7 +23,7 @@
 	padding-left: 0.17rem;
 	line-height: 0.6rem;
 	background-color:rgba(241,241,241,1);
-	margin-right: -1rem;
+	margin-right: -0.25rem;
 	justify-content: space-between;
 	align-items: center;
 	}
@@ -141,7 +141,7 @@
 }
 
 
-#plate_number{
+#plate_number,#target_plate_number{
     display: inline-block;
 	width: 43%;
     margin: 0rem;
