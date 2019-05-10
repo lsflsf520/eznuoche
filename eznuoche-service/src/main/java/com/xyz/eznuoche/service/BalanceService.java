@@ -89,6 +89,12 @@ public class BalanceService extends AbstractBaseService<Integer, Balance> implem
     	notifyLogService.insert(updata);
     }
     
+    public void addBalace4Inviter(int uid) {
+    	int smsNum = BaseConfig.getInt("balance.invite.sms.send.num", 5);
+    	int telNum = BaseConfig.getInt("balance.invite.tel.send.num", 5);
+    	balanceDao.addBalance4Inviter(smsNum, telNum, uid);
+    }
+    
     @Transactional(value="eznuocheTransactionManager")
     public void addBalance(PayLog payLog, String thirdTradeNo,  MsgType msgType, int num) {
     	String fieldName = null;

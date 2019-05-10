@@ -14,4 +14,6 @@ public interface IBalanceService {
 	
 	void addBalance(PayLog payLog, String thirdTradeNo,  MsgType msgType, int num);
 	
+	void addBalace4Inviter(int uid);
+	
 }

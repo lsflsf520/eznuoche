@@ -318,6 +318,14 @@ function notify(msgType) {
 		timeoutFn : function() {
 			mui.toast('请求超时')
 		}
+	}, function(response, status, xhr) {
+		if ("NOT_ENOUGH_SMS" == response.resultCode) {
+			$("#chargeDiv").attr("msg-type", "SMS");
+			showChargeDialog();
+		} else if ("NOT_ENOUGH_TEL" == response.resultCode) {
+			$("#chargeDiv").attr("msg-type", "TEL");
+			showChargeDialog();
+		}
 	});
 }
 
@@ -328,4 +336,9 @@ function selectAmount(divId) {
 function hideChargeDialog() {
 	$("#maskDiv").hide();
 	$("#chargeDiv").hide();
+}
+
+function showChargeDialog() {
+	$("#maskDiv").show();
+	$("#chargeDiv").show();
 }

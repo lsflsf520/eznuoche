@@ -132,4 +132,8 @@
     update balance set ${fieldName} = ${fieldName} + #{num,jdbcType=INTEGER}, last_uptime=now()  where uid = #{uid,jdbcType=INTEGER} 
   </update>
   
+  <update id="addBalance4Inviter">
+    update balance set sms_cnt = sms_cnt + #{smsNum,jdbcType=INTEGER}, tel_cnt = tel_cnt + #{telNum,jdbcType=INTEGER} where uid = #{uid,jdbcType=INTEGER} 
+  </update>
+  
 </mapper>

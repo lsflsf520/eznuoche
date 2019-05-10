@@ -26,4 +26,12 @@ public interface BalanceDao extends IBaseDao<Integer, Balance> {
      * @return
      */
     int addBalance(@Param("num") int num, @Param("fieldName") String fieldName, @Param("uid") int uid);
+    
+    /**
+     * 
+     * @param num
+     * @param uid
+     * @return
+     */
+    int addBalance4Inviter(@Param("smsNum") int smsNum, @Param("telNum") int telNum, @Param("uid") int uid);
 }

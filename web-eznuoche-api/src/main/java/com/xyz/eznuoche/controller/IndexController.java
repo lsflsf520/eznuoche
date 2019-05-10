@@ -129,10 +129,14 @@ public class IndexController {
 				}
 				
 				inviteUidStr = RegUserService.buildInviteUid(inviter);
+				inviteUid = inviter.getId();
 			}
 			
 			dbData = regUserService.doReg4ChannelUser(phone, channelUser == null || StringUtils.isBlank(channelUser.getNickName()) 
 					                     ? StringUtil.stringHide(phone) : channelUser.getNickName(), inviteUidStr);
+			if(inviteUid > 0){
+				balanceService.addBalace4Inviter(inviteUid);
+			}
 		} 
 		
 		if(channelUser != null) {

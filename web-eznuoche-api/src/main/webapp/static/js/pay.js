@@ -1,13 +1,25 @@
-//微信支付
+function is_weixnNag() {
+	var ua = navigator.userAgent.toLowerCase();
+	if (ua.match(/MicroMessenger/i) == "micromessenger") {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+// 微信支付
 function weixinpay() {
+	var msgType = $("#chargeDiv").attr("msg-type");
+	var amount = $(".ne_kuaic div.hover").attr("data-value");
+	if (!amount) {
+		mui.toast("请选择支付金额");
+		return;
+	}
 	if (is_weixnNag()) {// 如果是微信浏览器，则使用微信公众号支付方式
-		inweixinpay();
+		inweixinpay(amount, msgType);
 	} else {
 		Kino.ajax("/wxpay/mweb.do", function(response) {
 			if (response.resultCode == 'SUCCESS') {
-				setCookie("orderorg", document.referrer);
-				setCookie("payid", showTradeNo);// 记录下当前订单id
-				console.log(getCookie("orderorg"));
 				window.location = response.model.data;
 			} else {
 				mui.toast("订单已支付，请勿重复提交");
@@ -15,7 +27,8 @@ function weixinpay() {
 			}
 		}, {
 			data : {
-				orderId : payid,
+				amount : amount,
+				msgType : msgType
 			},
 			headers : {
 				'clientType' : 'H5'
@@ -26,16 +39,9 @@ function weixinpay() {
 }
 
 // 微信公众号支付
-function inweixinpay() {
-	var openid = getParam("openId");
-	if (!openid || openid == "") {
-		mui.toast("微信授权失败");
-		return;
-	}
+function inweixinpay(amount, msgType) {
 	Kino.ajax("/wxpay/jsapi.do", function(response) {// 支付
 		if (response.resultCode == 'SUCCESS') {
-			setCookie("orderorg", document.referrer);
-			setCookie("payid", showTradeNo);// 记录下当前订单id
 			onBridgeReady(response.model);
 		} else {
 			mui.toast("订单已支付，请勿重复提交");
@@ -43,8 +49,8 @@ function inweixinpay() {
 		}
 	}, {
 		data : {
-			orderId : payid,
-			openId : openid
+			amount : amount,
+			msgType : msgType
 		},
 		headers : {
 			'clientType' : 'H5'
