@@ -1,5 +1,7 @@
 package com.xyz.eznuoche.service;
 
+import java.util.Date;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class ThirdUserService extends AbstractBaseService<Integer, ThirdUser> {
     }
 
     public Integer insertReturnPK(ThirdUser thirdUser) {
+    	thirdUser.setCreateTime(new Date());
+    	thirdUser.setLastUptime(thirdUser.getCreateTime());
         thirdUserDao.insertReturnPK(thirdUser);
         return thirdUser.getPK();
     }
