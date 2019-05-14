@@ -19,7 +19,7 @@
 		
 		<script src="/static/js/hm.js"></script>
 		<script type="text/javascript" src="/static/js/jquery-1.12.2.js"></script>
-		<script src="/static/js/main.js" type="text/javascript"></script>
+		<script src="/static/js/main.js?v=1" type="text/javascript"></script>
     </head>
   
     <body class="mui-ios mui-ios-11 mui-ios-11-0">
@@ -54,7 +54,7 @@
 							<td id="wxNotify" style="width:30%" align="center"><img src="/static/images/weixin.png" />
 						<div>微信通知</div><div>不限</div></td>
 							<td id="smsNotify" style="width:30%" align="center"><img src="/static/images/sms.png" />
-						<div>短信通知</div><div>剩余<span>3<span>次</div></td>
+						<div>短信通知</div><div><#if ((balance.smsCnt)!0) gt 0>剩余<span>${(balance.smsCnt)!0}</span>次<#else>立即充值</#if></div></td>
 							<td id="telNotify" style="width:30%;color:gray;" align="center"><img src="/static/images/tel_gray.png" />
 						<div>语音通知</div><div>即将开通</div></td>
 						</tr>

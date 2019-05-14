@@ -69,6 +69,9 @@ public class IndexController {
 			List<UserCar> myCars = userCarService.loadMyCars(ThreadUtil.getUidInt());
 			mav.addObject("myCars", myCars);
 			mav.addObject("hasLogon", true);
+			
+			Balance balance = balanceService.findById(suser.getUidInt());
+			mav.addObject("balance", balance);
 		} catch (BaseRuntimeException e) {
 			LogUtils.warn(e.getMessage());
 		}
@@ -93,7 +96,12 @@ public class IndexController {
 		}
 		
 		ThirdUser channelUser = null;
-		SessionUser suser = ThreadUtil.getCurrUser();
+		SessionUser suser = null;
+		try{
+			suser = LogonUtil.getSessionUser();
+		} catch(Exception e) {
+			//do nothing
+		}
 		if(suser != null) {
 			if(!suser.needBindPhone()) {
 				return new ResultModel("NOT_NEED_BIND", "当前无需绑定账号");

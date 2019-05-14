@@ -174,41 +174,45 @@ $("body").on('tap', '#add_ym', function() {
 })
 
 // 注册
-$("body").on('tap', '#zhuce_ym', function() {
-	if (checkInput()) {
-		var phone_val = $('#plate_phone').val();
-		var fcode = $('#plate_invite_code').val();
-		if (isNull(fcode)) {
-			fcode = ''
-		}
-		var code_val = $('#plate_smscode').val();
-		var plateNo = $('#mySel').text() + $('#plate_number').val();
-		// 注册接口
-		function successfn(response, status, xhr) {
-			mui.toast('登记成功');
-			// setTimeout(function() {
-			// window.location.href = 'login.html';
-			// }, 2000);
-			window.location.reload();
-			// $('.ty_login').hide();
-		}
-		var obj = {
-			type : "POST",
-			data : {
-				phone : phone_val,
-				plateNo : plateNo,
-				fcode : fcode,
-				_code_ : code_val,
-				pkey : uuid
-			},
-			timeoutFn : function() {
-				mui.toast('请求超时')
-			}
-		};
-		Kino.ajax('/bindUser.do', successfn, obj);
+$("body").on(
+		'tap',
+		'#zhuce_ym',
+		function() {
+			if (checkInput()) {
+				var phone_val = $('#plate_phone').val();
+				var fcode = $('#plate_invite_code').val();
+				if (isNull(fcode)) {
+					fcode = ''
+				}
+				var code_val = $('#plate_smscode').val();
+				var plateNo = $('#plate_number').val() ? $('#mySel').text()
+						+ $('#plate_number').val() : "";
+				// 注册接口
+				function successfn(response, status, xhr) {
+					mui.toast('登记成功');
+					// setTimeout(function() {
+					// window.location.href = 'login.html';
+					// }, 2000);
+					window.location.reload();
+					// $('.ty_login').hide();
+				}
+				var obj = {
+					type : "POST",
+					data : {
+						phone : phone_val,
+						plateNo : plateNo,
+						fcode : fcode,
+						_code_ : code_val,
+						pkey : uuid
+					},
+					timeoutFn : function() {
+						mui.toast('请求超时')
+					}
+				};
+				Kino.ajax('/bindUser.do', successfn, obj);
 
-	}
-});
+			}
+		});
 
 function S4() {
 	return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
@@ -231,8 +235,9 @@ function checkInput() {
 	} else if (code == null || code == '') {
 		mui.toast("请输入验证码");
 		return false;
-	} else if (plateNo.length < 5 || plateNo.length > 10
-			|| !/\w+/.test(plateNo)) {
+	} else if (plateNo
+			&& (plateNo.length < 5 || plateNo.length > 10 || !/\w+/
+					.test(plateNo))) {
 		mui.toast("请输入正确的车牌号");
 		return false;
 	}
@@ -291,13 +296,13 @@ function selectPrefix(currSel) {
 			});
 }
 
-$('#wxNotify').click(function() {
+$("body").on('tap', '#wxNotify', function() {
 	notify('WX');
 });
-$('#smsNotify').click(function() {
+$("body").on('tap', '#smsNotify', function() {
 	notify('SMS');
 });
-$('#telNotify').click(function() {
+$("body").on('tap', '#telNotify', function() {
 	notify('TEL');
 });
 

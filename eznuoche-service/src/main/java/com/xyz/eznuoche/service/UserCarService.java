@@ -71,7 +71,7 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     }
     
     public Integer saveCarNum(int uid, String plateNo) {
-    	if(StringUtils.isBlank(plateNo)) {
+    	if(StringUtils.isBlank(plateNo) || plateNo.length() <= 1) {
     		LogUtils.warn("plateNo cannot be null to save");
     		return 0;
     	}
