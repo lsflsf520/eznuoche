@@ -139,7 +139,7 @@ public class RegUser extends BaseEntity<Integer> {
     
     @JsonIgnore
     public String getDecryptPhone() {
-    	return EncryptTools.phoneEncypt(this.getPhone());
+    	return EncryptTools.phoneDecrypt(this.getPhone());
     }
     
     public String getWellHeadImg() {

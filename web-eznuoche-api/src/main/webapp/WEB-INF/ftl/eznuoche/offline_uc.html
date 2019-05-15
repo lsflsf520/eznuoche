@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>支付中</title>
+<link rel="stylesheet" href="/static/css/mui.min.css">
+<link href="/static/css/h5common.css?v=1" rel="stylesheet">
+<link href="/static/css/ucenter.css?v=1" rel="stylesheet">
+
+</head>
+<body>
+  <div class="content">
+        <div class="floatLwidth" id="content">
+   <ul>
+     <li>车牌号：<input id="plateNo"></li>
+     <li>手机号：<input id="phone"></li>
+     <li><input type="button" id="btn"></li>
+   </ul>       
+        </div>
+    </div>
+    
+<script type="text/javascript" src="/static/js/jquery-1.12.2.js"></script>
+<script src="/static/js/mui.min.js"></script>
+<script src="/static/js/common.js?v=1" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+$("#btn").click(function(){
+	var plateNo = $("#plateNo").val();
+	var phone = $("#phone").val();
+	if(!plateNo){
+		mui.toast("车牌号不能为空");
+		return;
+	}
+	if(!phone || !/^1\d{10}$/.test(phone)) {
+		mui.toast("请输入正确的手机号码");
+		return;
+	}
+	Kino.ajax('/offlinePlateNo.do', function(response, status, xhr) {
+		mui.toast("数据录入成功");
+		window.reload();
+	}, {
+		type : "POST",
+		data : {
+			plateNo : plateNo,
+			phone: phone
+		},
+		timeoutFn : function() {
+			mui.toast('请求超时')
+		}
+	});
+});
+</script>
+</body>
+</html>

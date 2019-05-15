@@ -1,7 +1,9 @@
 package com.xyz.eznuoche.controller;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
@@ -18,10 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.xyz.eznuoche.dto.Sms;
 import com.xyz.eznuoche.entity.Balance;
+import com.xyz.eznuoche.entity.OfflineUserCar;
 import com.xyz.eznuoche.entity.RegUser;
 import com.xyz.eznuoche.entity.ThirdUser;
 import com.xyz.eznuoche.entity.UserCar;
 import com.xyz.eznuoche.service.IBalanceService;
+import com.xyz.eznuoche.service.OfflineUserCarService;
 import com.xyz.eznuoche.service.RegUserService;
 import com.xyz.eznuoche.service.SmsService;
 import com.xyz.eznuoche.service.ThirdUserService;
@@ -35,6 +39,7 @@ import com.xyz.tools.common.constant.CommonStatus;
 import com.xyz.tools.common.constant.MsgType;
 import com.xyz.tools.common.exception.BaseRuntimeException;
 import com.xyz.tools.common.utils.BaseConfig;
+import com.xyz.tools.common.utils.DateUtil;
 import com.xyz.tools.common.utils.EncryptTools;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.RegexUtil;
@@ -42,6 +47,7 @@ import com.xyz.tools.common.utils.StringUtil;
 import com.xyz.tools.common.utils.ThreadUtil;
 import com.xyz.tools.web.util.LogonUtil;
 import com.xyz.tools.web.util.LogonUtil.SessionUser;
+import com.xyz.tools.web.util.WxTool;
 
 @Controller
 public class IndexController {
@@ -54,6 +60,9 @@ public class IndexController {
 	
 	@Resource
 	private UserCarService userCarService;
+	
+	@Resource
+	private OfflineUserCarService offlineUserCarService;
 	
 	@Resource
 	private SmsService smsService;
@@ -186,39 +195,82 @@ public class IndexController {
 		return new ResultModel("ILLEGAL_STATE", "数据状态不正常");
 	}
 	
+	@RequestMapping("offline")
+	public ModelAndView offline(){
+		
+		return new ModelAndView("eznuoche/offline_uc");
+	}
+	
+	@PostMapping("offlinePlateNo")
+	@ResponseBody
+	public ResultModel offlinePlateNo(String plateNo, String phone) {
+		if(StringUtils.isBlank(plateNo)) {
+			return new ResultModel("ILLEGAL_PARAM", "车牌号不能为空");
+		}
+		if(!RegexUtil.isPhone(phone)){
+			return new ResultModel("ILLEGAL_PARAM", "手机号不正确");
+		}
+		
+		OfflineUserCar dbData = offlineUserCarService.loadByPlateNo(plateNo);
+		if(dbData != null) {
+			return new ResultModel("ALREADY_EXIST", "该车牌号已录入");
+		}
+		
+		OfflineUserCar updata = new OfflineUserCar();
+		updata.setPlateNo(plateNo);
+		updata.setPhone(EncryptTools.phoneEncypt(phone));
+		
+		offlineUserCarService.insert(updata);
+		
+		return new ResultModel(true);
+	}
+	
 	@RequestMapping("/{msgType}/notify")
 	@ResponseBody
 	public ResultModel wxNotify(@PathVariable MsgType msgType, String plateNo) {
 		if(StringUtils.isBlank(plateNo) || msgType == null) {
 			return new ResultModel("ILLEGAL_PARAM", "参数错误");
 		}
-		UserCar targetData = userCarService.loadByPlateNo(plateNo);
-		if(targetData == null){
-			return new ResultModel("NOT_EXIST", "点击右上角的 ... 按钮先邀请该车主进行登记，您还可以获得5次免费短信通知服务哦！");
-		}
-		RegUser targetUser = regUserService.findById(targetData.getUid());
-		if(targetUser == null || !targetUser.isNormal()) {
-			return new ResultModel("ILLEGAL_STATE", "数据状态异常，请联系客服或稍后重试！");
-		}
 		Balance balance = balanceService.findById(ThreadUtil.getUidInt());
 		if(balance == null) {
-			LogUtils.warn("balance is not exist for uid %d", targetUser.getId());
+			LogUtils.warn("balance is not exist for uid %d", ThreadUtil.getUidInt());
 			return new ResultModel("NOT_ENOUGH", "您所剩通知次数不足");
+		}
+		RegUser targetUser = new RegUser();
+		UserCar targetData = userCarService.loadByPlateNo(plateNo);
+		if(targetData == null ){
+			if(MsgType.WX.equals(msgType)) {
+				return new ResultModel("NOT_EXIST", "先分享本页面邀请该车主进行登记，您还可以获得5次免费短信通知服务哦！");
+			}
+			OfflineUserCar ouc = offlineUserCarService.loadByPlateNo(plateNo);
+			if(ouc == null){
+				return new ResultModel("NOT_EXIST", "先分享本页面邀请该车主进行登记，您还可以获得5次免费短信通知服务哦！");
+			}
+			targetUser.setPhone(ouc.getPhone());
+			targetUser.setState(CommonStatus.Normal);
+		} else {
+			if(ThreadUtil.getUidInt().equals(targetData.getUid())){
+				return new ResultModel("PLATE_OWNER", "该车牌号属于您自己，请确认车牌号是否填写正确");
+			}
+			targetUser = regUserService.findById(targetData.getUid());
+			if(targetUser == null || !targetUser.isNormal()) {
+				return new ResultModel("ILLEGAL_STATE", "数据状态异常，请联系客服或稍后重试！");
+			}
 		}
 		if(MsgType.WX.equals(msgType)) {
 			/*if(balance.getWxCnt() <= 0){
 				return new ResultModel("NOT_ENOUGH_WX", "您所剩微信通知次数不足");
 			}*/
 			try{
-				boolean result = RedisDistLock.trylock("notify_wx", targetUser.getId());
+				boolean result = RedisDistLock.trylock("notify_wx", targetUser.getPhone());
 				if(!result) {
 					return new ResultModel("REPEAT_OPER", "正在通知该用户，请勿重复操作！");
 				}
-				String hasSendIn5Min = ShardJedisTool.hget(DefaultJedisKeyNS.mb_vc, targetUser.getId(), "wx");
+				String hasSendIn5Min = ShardJedisTool.hget(DefaultJedisKeyNS.mb_vc, targetUser.getPhone(), "wx");
 				if(StringUtils.isNotBlank(hasSendIn5Min)) {
 					return new ResultModel("FREQUENCY_SEND", "发送太频繁，请稍后重试！");
 				}
-				String sendNumIn24Hour = ShardJedisTool.get(DefaultJedisKeyNS.ei, "wx" + targetUser.getId());
+				String sendNumIn24Hour = ShardJedisTool.get(DefaultJedisKeyNS.ei, "wx" + targetUser.getPhone());
 				if(RegexUtil.isInt(sendNumIn24Hour) && Integer.valueOf(sendNumIn24Hour) > 5) {
 					return new ResultModel("FREQUENCY_SEND", "发送太频繁，请稍后重试！");
 				}
@@ -226,10 +278,25 @@ public class IndexController {
 				if(targetWxUser == null || StringUtils.isBlank(targetWxUser.getThirdUid())) {
 					return new ResultModel("ILLEGAL_STATE", "这个小伙伴还没有微信授权认证，请先使用短信通知功能吧");
 				}
-//			WxTool.sendWxTmplMsg(targetWxUser.getThirdUid(), templateId, url, paramMap);
-				
-				ShardJedisTool.hset(DefaultJedisKeyNS.mb_vc, targetUser.getId(), "wx", 1);
-				ShardJedisTool.incr(DefaultJedisKeyNS.ei, "wx" + targetUser.getId());
+				/*
+				 * {{first.DATA}}
+					号牌号码：{{keyword1.DATA}}
+					发起时间：{{keyword2.DATA}}
+					对方留言：{{keyword3.DATA}}
+					{{remark.DATA}}
+				 */
+				Map<String, String> paramMap = new HashMap<String, String>();
+				paramMap.put("first", "您好，您收到一个挪车请求。");
+				paramMap.put("keyword1", targetData.getPlateNo());
+				paramMap.put("keyword2", DateUtil.getCurrentDateTimeStr());
+				paramMap.put("keyword3", "您的爱车挡住我的路了，麻烦速来挪一下，感谢！");
+				paramMap.put("remark", "关注公众号“北京朝朝盈”，使用EZ挪车，保护隐私，方便他人。");
+			    boolean notifyResult = WxTool.sendWxTmplMsg(targetWxUser.getThirdUid(), "r6hfyXxN2sBvOg7I6PzHkRm4V53Jz1M8NtOrWkBPgH0", null, paramMap);
+				if(!notifyResult) {
+                    return new ResultModel("NOTIFY_ERR", "对不起，微信通知失败，请改用其他通知方式！");					
+				}
+				ShardJedisTool.hset(DefaultJedisKeyNS.mb_vc, targetUser.getPhone(), "wx", 1);
+				ShardJedisTool.incr(DefaultJedisKeyNS.ei, "wx" + targetUser.getPhone());
 			} finally {
 				RedisDistLock.release("notify_wx", targetUser.getId());
 			}
@@ -238,15 +305,15 @@ public class IndexController {
 				return new ResultModel("NOT_ENOUGH_SMS", "您所剩短信通知次数不足");
 			}
 			try{
-				boolean result = RedisDistLock.trylock("notify_sms", targetUser.getId());
+				boolean result = RedisDistLock.trylock("notify_sms", targetUser.getPhone());
 				if(!result) {
 					return new ResultModel("REPEAT_OPER", "正在通知该用户，请勿重复操作！");
 				}
-				String hasSendIn5Min = ShardJedisTool.hget(DefaultJedisKeyNS.mb_vc, targetUser.getId(), "sms");
+				String hasSendIn5Min = ShardJedisTool.hget(DefaultJedisKeyNS.mb_vc, targetUser.getPhone(), "sms");
 				if(StringUtils.isNotBlank(hasSendIn5Min)) {
 					return new ResultModel("FREQUENCY_SEND", "发送太频繁，请稍后重试！");
 				}
-				String sendNumIn24Hour = ShardJedisTool.get(DefaultJedisKeyNS.ei, "sms" + targetUser.getId());
+				String sendNumIn24Hour = ShardJedisTool.get(DefaultJedisKeyNS.ei, "sms" + targetUser.getPhone());
 				if(RegexUtil.isInt(sendNumIn24Hour) && Integer.valueOf(sendNumIn24Hour) > 5) {
 					return new ResultModel("FREQUENCY_SEND", "发送太频繁，请稍后重试！");
 				}
@@ -256,13 +323,14 @@ public class IndexController {
 				sms.setTmplId(BaseConfig.getValue("notify.sms.tmplid", "428109"));
 				sms.setParams(Arrays.asList(plateNo));
 				ResultModel resultModel = smsService.send(sms);
-				if(resultModel.isSuccess()) {
-					balanceService.minusBalance(targetUser.getId(), msgType, ThreadUtil.getUidInt());
+				if(!resultModel.isSuccess()) {
+					return new ResultModel("NOTIFY_ERR", "对不起，短信通知失败，请改用其他通知方式！");	
 				}
-				ShardJedisTool.hset(DefaultJedisKeyNS.mb_vc, targetUser.getId(), "sms", 1);
-				ShardJedisTool.incr(DefaultJedisKeyNS.ei, "sms" + targetUser.getId());
+				balanceService.minusBalance(targetUser.getId(), msgType, ThreadUtil.getUidInt());
+				ShardJedisTool.hset(DefaultJedisKeyNS.mb_vc, targetUser.getPhone(), "sms", 1);
+				ShardJedisTool.incr(DefaultJedisKeyNS.ei, "sms" + targetUser.getPhone());
 			} finally {
-				RedisDistLock.release("notify_sms", targetUser.getId());
+				RedisDistLock.release("notify_sms", targetUser.getPhone());
 			}
 		} else if (MsgType.TEL.equals(msgType)) {
 			if(balance.getTelCnt() <= 0){
@@ -270,7 +338,6 @@ public class IndexController {
 			}
 			return new ResultModel("NOT_SUPPORT", "本功能正在努力开发中，敬请期待");
 		} else {
-			
 			return new ResultModel("NOT_SUPPORT", "不支持该通知方式");
 		}
 		
