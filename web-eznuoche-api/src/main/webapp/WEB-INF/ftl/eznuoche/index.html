@@ -95,7 +95,7 @@
 					   <#if myCars?? && myCars?size gt 0>
 						    <li>我的已登记车牌号：</li>
 						   <#list myCars as item>
-						    <li>${(item.plateNo)!}</li>
+						    <li><span>${(item.plateNo)!}</span><a href="/delPlateNo.do?id=${(item.id)!}"><span>移除</span></a></li>
 						   </#list>
 					   </#if>
 					  </#if>

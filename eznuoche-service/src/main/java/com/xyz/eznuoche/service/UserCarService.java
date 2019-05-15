@@ -43,7 +43,12 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     	t.setLastUptime(new Date());
     	return super.update(t);
     }
-
+    
+    @Override
+    protected String getStatusFieldName() {
+    	return "state";
+    }
+    
     public Integer doSave(UserCar userCar) {
         if (userCar.getPK() == null) {
         	if(StringUtils.isBlank(userCar.getPlateNo())){

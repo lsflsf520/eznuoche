@@ -155,7 +155,12 @@ sendCode = function(thisBtn) {
 };
 
 $("body").on('tap', '#add_ym', function() {
-	var plateNo = $('#mySel').text() + $('#plate_number').val();
+	var plateNo = $('#plate_number').val();
+	if (!plateNo) {
+		mui.toast('车牌号不能为空');
+		return;
+	}
+	plateNo = $('#mySel').text() + plateNo;
 	// 注册接口
 	function successfn(response, status, xhr) {
 		mui.toast('登记成功');
@@ -256,15 +261,16 @@ function doLoop() {
 	}
 }
 
-var platePrefix = [ "川", "鄂", "赣", "贵", "沪", "冀", "津", "晋", "京", "辽", "鲁", "闽",
-		"宁", "琼", "苏", "皖", "湘", "豫", "粤", "浙" ];
+var platePrefix = [ '湘', '京', '沪', '粤', '津', '渝', '川', '冀', '苏', '晋', '蒙', '辽',
+		'吉', '黑', '浙', '皖', '闽', '赣', '鲁', '豫', '鄂', '桂', '琼', '黔', '滇', '藏',
+		'陕', '甘', '青', '宁', '新', '台', '港', '澳' ];
 function selectPrefix(currSel) {
 	var tooltip = '';
-	tooltip += '<div class="shade"></div><div class="mask_pull">'
-	tooltip += '<div class="mask_pull_tit flex"><span class="mask_pull_name">车牌号码</span>'
-	tooltip += '<span class="pull-icon-close"><i class="iconfont icon-guanbi"></i></span></div>'
+	tooltip += '<div class="shade"></div><div class="mask_pull">';
+	tooltip += '<div class="mask_pull_tit flex"><span class="mask_pull_name">车牌号码</span>';
+	tooltip += '<span class="pull-icon-close"><i class="iconfont icon-guanbi"></i></span></div>';
 	tooltip += '<ul class="mask_pull_ul wrapul mask_pulls flex" data-length='
-			+ platePrefix.length + '>'
+			+ platePrefix.length + '>';
 	for (var i = 0; i < platePrefix.length; i++) {
 		tooltip += '<li>'
 		tooltip += '<a href="javascript:void(0)">' + platePrefix[i] + '</a>'
@@ -307,11 +313,12 @@ $("body").on('tap', '#telNotify', function() {
 });
 
 function notify(msgType) {
-
+	var plateNo = $('#target_plate_number').val();
 	if (!plateNo) {
 		mui.toast("对方车牌号不能为空");
 		return;
 	}
+	plateNo = $('#targetSel').text() + plateNo;
 	Kino.ajax('/' + msgType + '/notify.do', function(response, status, xhr) {
 		mui.toast("已成功通知对方，请耐心等待");
 		window.reload();

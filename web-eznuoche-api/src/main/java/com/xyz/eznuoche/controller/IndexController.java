@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,7 @@ import com.xyz.tools.cache.constant.DefaultJedisKeyNS;
 import com.xyz.tools.cache.redis.RedisDistLock;
 import com.xyz.tools.cache.redis.ShardJedisTool;
 import com.xyz.tools.common.bean.ResultModel;
+import com.xyz.tools.common.constant.CommonStatus;
 import com.xyz.tools.common.constant.MsgType;
 import com.xyz.tools.common.exception.BaseRuntimeException;
 import com.xyz.tools.common.utils.BaseConfig;
@@ -171,6 +173,19 @@ public class IndexController {
 		return new ResultModel(true);
 	}
 	
+	@GetMapping("delPlateNo")
+	@ResponseBody
+	public ResultModel delPlateNo(int id) {
+		UserCar dbData = userCarService.findById(id);
+		if(dbData != null && CommonStatus.Normal.equals(dbData.getState()) && ThreadUtil.getUidInt().equals(dbData.getUid())){
+			userCarService.softDel(id);
+			
+			return new ResultModel(true);
+		}
+		
+		return new ResultModel("ILLEGAL_STATE", "数据状态不正常");
+	}
+	
 	@RequestMapping("/{msgType}/notify")
 	@ResponseBody
 	public ResultModel wxNotify(@PathVariable MsgType msgType, String plateNo) {
@@ -179,7 +194,7 @@ public class IndexController {
 		}
 		UserCar targetData = userCarService.loadByPlateNo(plateNo);
 		if(targetData == null){
-			return new ResultModel("NOT_EXIST", "这个家伙还没有把手机号登记到系统中，您可以点击右上角的 ... 按钮邀请他进行登记，您还可以获得5次免费短信通知和5次免费电话通知服务哦！");
+			return new ResultModel("NOT_EXIST", "点击右上角的 ... 按钮先邀请该车主进行登记，您还可以获得5次免费短信通知服务哦！");
 		}
 		RegUser targetUser = regUserService.findById(targetData.getUid());
 		if(targetUser == null || !targetUser.isNormal()) {
