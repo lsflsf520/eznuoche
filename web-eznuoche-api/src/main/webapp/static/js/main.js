@@ -303,16 +303,22 @@ function selectPrefix(currSel) {
 }
 
 $("body").on('tap', '#wxNotify', function() {
-	notify('WX');
+	notify('WX', '#wxNotify');
 });
 $("body").on('tap', '#smsNotify', function() {
-	notify('SMS');
+	notify('SMS', '#smsNotify');
 });
 $("body").on('tap', '#telNotify', function() {
-	notify('TEL');
+	notify('TEL', '#telNotify');
 });
 
-function notify(msgType) {
+function notify(msgType, tdId) {
+	var leftCnt = $(tdId).attr('cnt');
+	if (leftCnt && parseInt(leftCnt) <= 0) {
+		showChargeDialog(msgType);
+		mui.toast("剩余次数不够，请先充值或分享本页面邀请好友可获取5次免费通知机会");
+		return;
+	}
 	var plateNo = $('#target_plate_number').val();
 	if (!plateNo) {
 		mui.toast("对方车牌号不能为空");
@@ -321,7 +327,7 @@ function notify(msgType) {
 	plateNo = $('#targetSel').text() + plateNo;
 	Kino.ajax('/' + msgType + '/notify.do', function(response, status, xhr) {
 		mui.toast("已成功通知对方，请耐心等待");
-		window.reload();
+		window.location.reload();
 	}, {
 		type : "POST",
 		data : {
@@ -332,11 +338,9 @@ function notify(msgType) {
 		}
 	}, function(response, status, xhr) {
 		if ("NOT_ENOUGH_SMS" == response.resultCode) {
-			$("#chargeDiv").attr("msg-type", "SMS");
-			showChargeDialog();
+			showChargeDialog("SMS");
 		} else if ("NOT_ENOUGH_TEL" == response.resultCode) {
-			$("#chargeDiv").attr("msg-type", "TEL");
-			showChargeDialog();
+			showChargeDialog("TEL");
 		}
 	});
 }
@@ -350,7 +354,8 @@ function hideChargeDialog() {
 	$("#chargeDiv").hide();
 }
 
-function showChargeDialog() {
+function showChargeDialog(msgType) {
+	$("#chargeDiv").attr("msg-type", msgType);
 	$("#maskDiv").show();
 	$("#chargeDiv").show();
 }

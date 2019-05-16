@@ -3,9 +3,8 @@
  * ajax:ajax通用配置(已经在下面代码处理了防止重复提交跟超时按钮禁用问题，值得注意的是，在按钮点击后需要马上禁用按钮，然后配合封装的ajax做处理)
  * url 为请求地址，successfn 成功回调函数 configs配置对象 可选配置对象 { async:"false", 是否异步
  * type:"POST", 请求get/post dataType:"jsonp", 接受类型 data:{a:1,b:2}, 发送数据对象
- * timeoutFn:function(){ 请求超时回调函数
- *  }, btnSelector:"#save" 防重复提交按钮选择器 id/class 比如 #save / .save } -----
- * renderData：arttemplate通用方法
+ * timeoutFn:function(){ 请求超时回调函数 }, btnSelector:"#save" 防重复提交按钮选择器 id/class 比如
+ * #save / .save } ----- renderData：arttemplate通用方法
  * 
  * @arttemplate封装
  * @param {Object需要渲染的对象}
@@ -61,28 +60,19 @@ window.Kino = {
 				            type: "post",
 				            data: {currUrl:urls},
 				            success: function (data_list) {
-// console.log(data_list);
 				                window.location.href = data_list.model.data;
 				            }
 				        });
-                }else if(response.resultCode == 'NEED_BIND_ACC'){
-                	 binding();
                 }else if (response.resultCode == 'SUCCESS') {
                     // 已登录
                       successfn(response, status, xhr);
-                }
-               
-              else {
-              // 其他错误代码
+                } else {
+                    // 其他错误代码
                     mui.toast(response.resultMsg);
-	           // if(response.resultMsg != ''){
-	           // mui.toast(response.resultMsg);
-	           // }
 	                if(failure != undefined){
 	                    failure(response, status, xhr)
 	                }
-
-              }
+                }
             },
             beforeSend: function (xhr) {
             	

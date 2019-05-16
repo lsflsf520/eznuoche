@@ -53,9 +53,9 @@
 						<tr>
 							<td id="wxNotify" style="width:30%" align="center"><img src="/static/images/weixin.png" />
 						<div>微信通知</div><div>不限</div></td>
-							<td id="smsNotify" style="width:30%" align="center"><img src="/static/images/sms.png" />
+							<td id="smsNotify" cnt="${(balance.smsCnt)!0}" style="width:30%" align="center"><img src="/static/images/sms.png" />
 						<div>短信通知</div><div><#if ((balance.smsCnt)!0) gt 0>剩余<span>${(balance.smsCnt)!0}</span>次<#else>立即充值</#if></div></td>
-							<td id="telNotify" style="width:30%;color:gray;" align="center"><img src="/static/images/tel_gray.png" />
+							<td id="telNotify" cnt="${(balance.telCnt)!0}" style="width:30%;color:gray;" align="center"><img src="/static/images/tel_gray.png" />
 						<div>语音通知</div><div>即将开通</div></td>
 						</tr>
 						

@@ -125,31 +125,36 @@
           <mvc:mapping path="/**"/>
           <mvc:exclude-mapping path="/error/**"/>
           <mvc:exclude-mapping path="/_mgr/**"/>
+          <mvc:exclude-mapping path="/wxpay/callback.do"/>
           <bean class="com.xyz.tools.web.aop.InviteCodeInterceptor" />
         </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/error/**"/>
             <mvc:exclude-mapping path="/ping/pang.do"/>
+            <mvc:exclude-mapping path="/wxpay/callback.do"/>
             <mvc:exclude-mapping path="/_mgr/**"/>
             <mvc:exclude-mapping path="/wx/**"/>
             <mvc:exclude-mapping path="/sms/**"/>
             <bean class="com.xyz.eznuoche.aop.WxAuthInterceptor" />
         </mvc:interceptor>
-        
         <mvc:interceptor>
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/error/**"/>
             <mvc:exclude-mapping path="/ping/pang.do"/>
             <mvc:exclude-mapping path="/_mgr/**"/>
             <mvc:exclude-mapping path="/toIndex.do"/>
+            <mvc:exclude-mapping path="/wxpay/callback.do"/>
             <mvc:exclude-mapping path="/sms/**"/>
             <mvc:exclude-mapping path="/wx/**"/>
             <mvc:exclude-mapping path="/bindUser/sms/send.do"/>
             <mvc:exclude-mapping path="/bindUser.do"/>
             <bean class="com.xyz.tools.web.aop.SessionInterceptor" />
         </mvc:interceptor>
-        
+        <mvc:interceptor>
+          <mvc:mapping path="/*/notify.do"/>
+          <bean class="com.xyz.eznuoche.aop.WxBindInterceptor" />
+        </mvc:interceptor>
         <mvc:interceptor>
             <mvc:mapping path="/bindUser/sms/send.do"/>
             <bean class="com.xyz.tools.web.aop.PhoneExistCheckInterceptor">

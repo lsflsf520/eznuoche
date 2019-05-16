@@ -16,7 +16,7 @@ public class WxBindInterceptor extends AbstractInterceptor {
 		if(ThreadUtil.isWxClient()){
 			SessionUser suser = ThreadUtil.getCurrUser();
 			if(suser == null || suser.needBindPhone()) {
-				throw new BaseRuntimeException("NEED_BIND_ACC", "需要绑定账号");
+				throw new BaseRuntimeException("NEED_BIND_ACC", "需要通过快捷登录之后才能使用此功能");
 			}
 		}
 		return true;

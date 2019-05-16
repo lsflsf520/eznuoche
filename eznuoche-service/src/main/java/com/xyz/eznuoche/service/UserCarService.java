@@ -83,7 +83,7 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     	
     	UserCar updata = new UserCar();
     	updata.setUid(uid);
-    	updata.setPlateNo(plateNo);
+    	updata.setPlateNo(plateNo.toUpperCase());
     	
     	return this.doSave(updata);
     }

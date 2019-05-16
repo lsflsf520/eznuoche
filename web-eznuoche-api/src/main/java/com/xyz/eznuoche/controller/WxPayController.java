@@ -162,7 +162,7 @@ public class WxPayController {
 		if ("SUCCESS".equals(notifyResult.getReturnCode()) && "SUCCESS".equals(notifyResult.getResultCode())) {
 			PayLog dbData = payLogService.loadByOutTradeNo(outTradeNo);
 			if(dbData != null && !OrdState.Payed.equals(dbData.getState())) {
-				if(notifyResult.getTotalFee().equals(dbData.getAmount())) {
+				if(notifyResult.getTotalFee().equals(dbData.getAmount() * 100)) {
 					try{
 						boolean locked = RedisDistLock.trylock("wxpay_callback", outTradeNo);
 						if(locked){
@@ -207,7 +207,7 @@ public class WxPayController {
 		WxPayUnifiedOrderRequest req = new WxPayUnifiedOrderRequest();
 		req.setBody(prodDesc);
 		req.setOutTradeNo(outTradeNo);
-		req.setTotalFee(amount);
+		req.setTotalFee(amount * 100);
 		req.setSpbillCreateIp(IPUtil.getLocalIp());
 		req.setTradeType(tradeType);
 		req.setProductId(amount+"");

@@ -1,6 +1,7 @@
 package com.xyz.eznuoche.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +37,7 @@ import com.xyz.tools.cache.redis.RedisDistLock;
 import com.xyz.tools.cache.redis.ShardJedisTool;
 import com.xyz.tools.common.bean.ResultModel;
 import com.xyz.tools.common.constant.CommonStatus;
+import com.xyz.tools.common.constant.GlobalConstant;
 import com.xyz.tools.common.constant.MsgType;
 import com.xyz.tools.common.exception.BaseRuntimeException;
 import com.xyz.tools.common.utils.BaseConfig;
@@ -177,6 +179,7 @@ public class IndexController {
 		if(StringUtils.isBlank(plateNo)) {
 			return new ResultModel("ILLEGAL_PARAM", "车牌号不能为空");
 		}
+
 		userCarService.saveCarNum(ThreadUtil.getUidInt(), plateNo);
 		
 		return new ResultModel(true);
@@ -219,6 +222,7 @@ public class IndexController {
 		OfflineUserCar updata = new OfflineUserCar();
 		updata.setPlateNo(plateNo);
 		updata.setPhone(EncryptTools.phoneEncypt(phone));
+		updata.setCreateTime(new Date());
 		
 		offlineUserCarService.insert(updata);
 		
@@ -320,8 +324,9 @@ public class IndexController {
 				Sms sms = new Sms();
 				sms.setAppId(MsgUtil.APP_ID);
 				sms.setPhone(targetUser.getDecryptPhone());
-				sms.setTmplId(BaseConfig.getValue("notify.sms.tmplid", "428109"));
+				sms.setTmplId(BaseConfig.getValue("notify.sms.tmplid", "426905"));
 				sms.setParams(Arrays.asList(plateNo));
+				sms.setModule(GlobalConstant.PROJECT_NAME);
 				ResultModel resultModel = smsService.send(sms);
 				if(!resultModel.isSuccess()) {
 					return new ResultModel("NOTIFY_ERR", "对不起，短信通知失败，请改用其他通知方式！");	
