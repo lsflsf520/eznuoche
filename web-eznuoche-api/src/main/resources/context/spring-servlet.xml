@@ -149,6 +149,7 @@
             <mvc:exclude-mapping path="/wx/**"/>
             <mvc:exclude-mapping path="/bindUser/sms/send.do"/>
             <mvc:exclude-mapping path="/bindUser.do"/>
+            <mvc:exclude-mapping path="/servAppoint/toPage.do"/>
             <bean class="com.xyz.tools.web.aop.SessionInterceptor" />
         </mvc:interceptor>
         <mvc:interceptor>

@@ -4,7 +4,7 @@
     <head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
-		<title>EZ挪车</title>
+		<title>EZ挪车-您的停车小助手</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -23,15 +23,14 @@
     </head>
   
     <body class="mui-ios mui-ios-11 mui-ios-11-0">
-	    <div class="hader_zuij">
+	    <!-- <div class="hader_zuij">
 		    <div class="ij_hader">
 			    <div class="er_top">
-				    <!-- <a class="iconfont icon-jiantou-you" href="javascript:;"></a> -->
 			    </div> 
 			    <div class="er_cet">欢迎使用EZ挪车</div>
 				<div class="er_btm er_btm"></div>
 			</div>
-		</div>
+		</div>  -->
 		
 		<div class="main_content">
 			
@@ -95,7 +94,7 @@
 					   <#if myCars?? && myCars?size gt 0>
 						    <li>我的已登记车牌号：</li>
 						   <#list myCars as item>
-						    <li><span>${(item.plateNo)!}</span><a href="/delPlateNo.do?id=${(item.id)!}"><span>移除</span></a></li>
+						    <li><span style="float:left;">${(item.plateNo)!}</span><a href="/delPlateNo.do?id=${(item.id)!}"><span style="float:right;">移除</span></a></li>
 						   </#list>
 					   </#if>
 					  </#if>
@@ -112,13 +111,17 @@
 					<div class="The_false" id="${(!(hasLogon!false) || (needBindPhone!false))?string('zhuce_ym', 'add_ym')}">
 						${(!(hasLogon!false) || (needBindPhone!false))?string('快捷登录', '登记新车牌')}
 					</div>
+					<div>
+					   同意<a href="http://static.siyufank.cn/eznc/agreement.html">《EZ挪车服务协议》</a>
+					</div>
 				</div>	
 			</div>
 			
 			<div style="margin: 0rem 0.35rem;">
 				<p>活动说明：</p>
-				<p>1、首次快捷登录成功，您将获得3次免费短信<!-- 和3次免费语音 -->通知挪车机会。</p>
-				<p>2、将本页面分享给好友，邀请好友首次快捷登录成功，您将获得5次免费短信<!-- 和5次免费语音 -->通知挪车机会。</p>
+				<p>1、首次快捷登录成功，您将获得<span style="color:red;">3</span>次免费短信<!-- 和3次免费语音 -->通知挪车机会。</p>
+				<p>2、将本页面分享给好友，邀请好友首次快捷登录成功，您将获得<span style="color:red;">5</span>次免费短信<!-- 和5次免费语音 -->通知挪车机会。</p>
+				<p align="center"><img style="width:2rem;height:2rem;margin:0.3rem;" alt="公众号二维码" src="/static/images/qrcode.png"></p>
 			</div>
 			
 		    
