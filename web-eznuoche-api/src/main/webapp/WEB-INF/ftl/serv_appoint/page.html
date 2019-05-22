@@ -34,33 +34,33 @@
 		
 		<div class="main_content">
 			<div class="tit_com">
-				<div class="content_min">
+				<div class="content_min" style="height:7rem;">
 					<ul>
 						<li class="flex">
 							<div class="plate">客户姓名</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="kehuName" style="width: 4rem;" autocomplete="off">
+								<input type="text" placeholder="" id="kehuName" style="width: 4rem;margin-bottom:0rem;" autocomplete="off">
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
 						<li class="flex">
 							<div class="plate">客户手机号</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="phone" style="width: 4rem;" autocomplete="off">
+								<input type="text" placeholder="" id="kehuPhone" style="width: 4rem;margin-bottom:0rem;" autocomplete="off">
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
 						<li class="flex">
 							<div class="plate">预约时间</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="appointTime" style="width: 4rem;" autocomplete="off">
+								<input type="text" placeholder="" id="appointTime" style="width: 4rem;margin-bottom:0rem;" autocomplete="off">
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
-						<li class="flex">
-							<div class="plate">备注</div>
+						<li class="flex" style="height:2rem;">
+							<div class="plate">服务内容</div>
 							<div class="plate_dex flex">
-							    <textarea id="servContent" rows="3" cols="20" style="width: 4rem;" autocomplete="off"></textarea>
+							    <textarea id="servContent" rows="5" style="width: 4rem;margin-bottom:0rem;height:1.9rem;" autocomplete="off"></textarea>
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
@@ -102,12 +102,35 @@
 						<div class="The_false" id="${(!(hasLogon!false) || (needBindPhone!false))?string('zhuce_ym', 'add_ym')}">
 						  ${(!(hasLogon!false) || (needBindPhone!false))?string('快捷登录', '登记新车牌')}
 					    </div>
-					    <div>
+					    <div align="center" style="margin: 0.2rem;">
 						   同意<a href="http://static.siyufank.cn/eznc/khagreement.html">《客户管理服务协议》</a>
 						</div>
 					  <#else>
-					    <#if >
-					    
+					    <#if dataPage?? && dataPage.datas?? && dataPage.datas?size gt 0>
+					       <table>
+					         <thead>
+					           <tr>
+                                 <th>客户姓名</th>
+                                 <th>客户手机号</th>
+                                 <th>预约时间</th>	
+                                 <th>服务内容</th>	
+                                 <th>状态</th>			           
+					           </tr>
+					         </thead>
+					         <tbody>
+					          <#list dataPage.datas as d>
+					           <tr>
+					             <td>${(d.kehuName)!}</td>
+					             <td>${(d.phone)!}</td>
+					             <td>${(d.appointTime)?string("yyyy-MM-dd HH:mm")}</td>
+					             <td>${(d.servContent)!}</td>
+					             <td>${(d.stateName)!}</td>
+					           </tr>
+					          </#list>
+					         </tbody>
+					       </table>
+					    <#else>
+					     暂无数据
 					    </#if>
 					  </#if>
 					</ul>
@@ -115,6 +138,7 @@
 					
 				</div>	
 			</div>
+			
 		</div>
 		
 		
@@ -123,14 +147,20 @@
 <script src="/static/js/common.js?v=1" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
 $("#btn").click(function(){
-	var plateNo = $("#plateNo").val();
-	var phone = $("#phone").val();
-	if(!plateNo){
-		mui.toast("车牌号不能为空");
+	var kehuName = $("#kehuName").val();
+	var kehuPhone = $("#kehuPhone").val();
+	var appointTime = $("#appointTime").val();
+	var servContent = $("#servContent").val();
+	if(!kehuName){
+		mui.toast("客户姓名不能为空");
 		return;
 	}
-	if(!phone || !/^1\d{10}$/.test(phone)) {
-		mui.toast("请输入正确的手机号码");
+	if(!kehuPhone || !/^1\d{10}$/.test(kehuPhone)) {
+		mui.toast("客户手机号格式不正确");
+		return;
+	}
+	if(!appointTime) {
+		mui.toast("预约时间不能为空");
 		return;
 	}
 	Kino.ajax('/servAppoint/add.do', function(response, status, xhr) {
@@ -139,8 +169,10 @@ $("#btn").click(function(){
 	}, {
 		type : "POST",
 		data : {
-			plateNo : plateNo,
-			phone: phone
+			kehuName : kehuName,
+			phone: kehuPhone,
+			appointTime: appointTime,
+			servContent: servContent
 		},
 		timeoutFn : function() {
 			mui.toast('请求超时')

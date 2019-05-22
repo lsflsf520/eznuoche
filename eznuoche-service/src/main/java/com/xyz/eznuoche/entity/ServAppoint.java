@@ -100,4 +100,21 @@ public class ServAppoint extends BaseEntity<Integer> {
     public Integer getPK() {
         return id;
     }
+    
+    public String getStateName() {
+    	if(CheckState.Deleted.equals(this.getState())) {
+    		return "已删除";
+    	}else if(CheckState.Closed.equals(this.state)) {
+    		return "已取消";
+    	}else if(CheckState.Passed.equals(this.state)) {
+    		return "已成交";
+    	}else if(CheckState.Checking.equals(this.state)) {
+    		if(this.getAppointTime() != null && this.appointTime.getTime() > System.currentTimeMillis()) {
+    			return "预约中";
+    		}
+    		return "已成交";
+    	}
+    	
+    	return "状态异常";
+    }
 }

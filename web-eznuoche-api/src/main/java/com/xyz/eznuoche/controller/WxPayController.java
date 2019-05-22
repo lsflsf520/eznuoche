@@ -128,7 +128,7 @@ public class WxPayController {
 			params.put("nonceStr", pay.getNonceStr());
 			params.put("package", "prepay_id=" + pay.getPrepayId());
 			params.put("signType", SignType.MD5);
-			String paySign = SignUtils.createSign(params, BaseConfig.getValue("wx.pay.key"), SignType.MD5);
+			String paySign = SignUtils.createSign(params, SignType.MD5, BaseConfig.getValue("wx.pay.key"),  null);
 			
 			LogUtils.info("jsapiPay params:%s, paySign:%s", params, paySign);
 			
@@ -213,7 +213,7 @@ public class WxPayController {
 		req.setProductId(amount+"");
 		req.setSpbillCreateIp(ThreadUtil.getClientIP());
 		req.setOpenid(openId);
-		req.setNotifyURL(notify);
+		req.setNotifyUrl(notify);
 		return req;
 	}
 

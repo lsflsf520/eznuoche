@@ -23,7 +23,7 @@ import com.xyz.tools.web.util.LogonUtil.SessionUser;
 import com.xyz.tools.web.util.WebUtils;
 import com.xyz.tools.web.util.WxTool;
 
-import me.chanjar.weixin.common.exception.WxErrorException;
+import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 
@@ -79,7 +79,7 @@ public class WxUserController {
 					channelUser.setNickName(wxUser.getNickname());
 					channelUser.setHeadImg(wxUser.getHeadImgUrl());
 					channelUser.setUid(0); //默认没有绑定主账号
-					channelUser.setSex(wxUser.getSexId() == null ? Sex.U : (wxUser.getSexId() == 1 ? Sex.M : Sex.F));
+					channelUser.setSex(wxUser.getSex() == null ? Sex.U : (wxUser.getSex() == 1 ? Sex.M : Sex.F));
 					channelUser.setThirdUid(wxUser.getOpenId());
 					channelUser.setInviteUid(inviteUid);
 					
