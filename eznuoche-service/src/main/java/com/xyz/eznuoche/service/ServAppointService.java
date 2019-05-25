@@ -1,12 +1,15 @@
 package com.xyz.eznuoche.service;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import com.github.miemiedev.mybatis.paginator.domain.PageBounds;
+import com.github.miemiedev.mybatis.paginator.domain.PageList;
 import com.xyz.eznuoche.dao.ServAppointDao;
 import com.xyz.eznuoche.entity.ServAppoint;
 import com.xyz.tools.common.constant.CheckState;
@@ -51,7 +54,7 @@ public class ServAppointService extends AbstractBaseService<Integer, ServAppoint
     	ServAppoint query = new ServAppoint();
     	query.setUid(uid);
     	
-    	PageData<ServAppoint> dataPage = this.findByPage(query, currPage, BaseConfig.getInt("list.page.maxsize", 10), "state.desc,id.desc");
+    	PageData<ServAppoint> dataPage = this.findByPage(uid, currPage);
         if(!CollectionUtils.isEmpty(dataPage.getDatas())){
         	for(ServAppoint dbData : dataPage.getDatas()) {
         		if(CheckState.Checking.equals(dbData.getState()) && dbData.getAppointTime() != null && dbData.getAppointTime().getTime() < System.currentTimeMillis()) {
@@ -64,4 +67,12 @@ public class ServAppointService extends AbstractBaseService<Integer, ServAppoint
      
     	return dataPage;
     }
+    
+    public PageData<ServAppoint> findByPage(int uid, int currPage){
+		PageBounds pageBounds = new PageBounds(currPage, BaseConfig.getInt("list.page.maxsize", 10));
+		
+		List<ServAppoint> tlist = servAppointDao.loadMyAppoints(uid, pageBounds);
+		
+		return new PageData<ServAppoint>((PageList<ServAppoint>)tlist);
+	}
 }

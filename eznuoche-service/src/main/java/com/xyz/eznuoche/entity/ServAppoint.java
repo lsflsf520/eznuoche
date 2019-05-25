@@ -2,7 +2,12 @@ package com.xyz.eznuoche.entity;
 
 import java.util.Date;
 
+import org.apache.commons.lang.StringUtils;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xyz.tools.common.constant.CheckState;
+import com.xyz.tools.common.utils.EncryptTools;
+import com.xyz.tools.common.utils.StringUtil;
 import com.xyz.tools.db.bean.BaseEntity;
 
 public class ServAppoint extends BaseEntity<Integer> {
@@ -117,4 +122,25 @@ public class ServAppoint extends BaseEntity<Integer> {
     	
     	return "状态异常";
     }
+    
+    public String getHidePhone() {
+    	return StringUtils.isBlank(this.getPhone()) ? null : StringUtil.stringHide(getDecryptPhone());
+    }
+    
+    @JsonIgnore
+    public String getDecryptPhone() {
+    	return EncryptTools.phoneDecrypt(this.getPhone());
+    }
+    
+    /**
+     * 
+     * @return 如果距离预约时间小于1个小时了，则表明需要紧急联系客户了
+     */
+    public boolean isEmergent() {
+    	return CheckState.Checking.equals(this.state) 
+    			&& this.getAppointTime() != null 
+    			&& this.appointTime.getTime() > System.currentTimeMillis()
+    			&& this.appointTime.getTime() < System.currentTimeMillis() + 60l * 60 * 1000;
+    }
+    
 }

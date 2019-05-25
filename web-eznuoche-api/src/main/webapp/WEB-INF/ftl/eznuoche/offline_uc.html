@@ -75,8 +75,9 @@
 $("#btn").click(function(){
 	var plateNo = $("#plateNo").val();
 	var phone = $("#phone").val();
-	if(!plateNo){
-		mui.toast("车牌号不能为空");
+	var carBrand = $("#carBrand").val();
+	if(!plateNo || plateNo.length < 6){
+		mui.toast("车牌号格式不正确");
 		return;
 	}
 	if(!phone || !/^1\d{10}$/.test(phone)) {
@@ -85,12 +86,13 @@ $("#btn").click(function(){
 	}
 	Kino.ajax('/offlinePlateNo.do', function(response, status, xhr) {
 		mui.toast("数据录入成功");
-		window.reload();
+		window.location.reload();
 	}, {
 		type : "POST",
 		data : {
 			plateNo : plateNo,
-			phone: phone
+			phone: phone,
+			carBrand: carBrand
 		},
 		timeoutFn : function() {
 			mui.toast('请求超时')

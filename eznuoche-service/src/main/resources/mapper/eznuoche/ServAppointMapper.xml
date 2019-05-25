@@ -145,4 +145,21 @@
 		</trim>
 	</where>
   </select>
+  
+  <select id="loadMyAppoints" resultMap="BaseResultMap">
+   select <include refid="BaseColumnList"/>
+   from (
+    (select
+		<include refid="BaseColumnList"/>
+	from serv_appoint
+	where uid = #{uid,jdbcType=INTEGER} and state = 'Checking' order by appoint_time asc)
+	union
+	(select
+		<include refid="BaseColumnList"/>
+	from serv_appoint
+	where uid = #{uid,jdbcType=INTEGER} and state in ('Closed', 'Passed') order by state desc, appoint_time desc)
+   ) t
+  </select>
+  
+  
 </mapper>

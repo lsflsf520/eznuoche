@@ -12,6 +12,7 @@ import com.xyz.eznuoche.service.ServAppointService;
 import com.xyz.tools.common.bean.ResultModel;
 import com.xyz.tools.common.constant.CheckState;
 import com.xyz.tools.common.exception.BaseRuntimeException;
+import com.xyz.tools.common.utils.EncryptTools;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.RegexUtil;
 import com.xyz.tools.common.utils.ThreadUtil;
@@ -32,10 +33,19 @@ public class ServAppointController {
 		SessionUser suser = null;
 		try{
 			suser = LogonUtil.getSessionUser();
+			mav.addObject("hasLogon", true);
+			
 			PageData<ServAppoint> dataPage = servAppointService.loadMyServAppoints(suser.getUidInt(), 1);
 			mav.addObject("dataPage", dataPage);
 		} catch (BaseRuntimeException e) {
 			LogUtils.warn(e.getMessage());
+		}
+		
+		if(ThreadUtil.isWxClient()){
+			if(suser == null || suser.needBindPhone()) {
+				mav.addObject("needBindPhone", true);
+				return mav;
+			}
 		}
 		
 		return mav;
@@ -52,7 +62,7 @@ public class ServAppointController {
 	@RequestMapping("add")
 	@ResponseBody
 	public ResultModel addServAppoint(ServAppoint servAppoint) {
-		if(RegexUtil.isPhone(servAppoint.getPhone())) {
+		if(!RegexUtil.isPhone(servAppoint.getPhone())) {
 			return new ResultModel("ILLEGAL_PHONE", "手机号格式不正确");
 		}
 		if(servAppoint.getAppointTime() == null) {
@@ -60,6 +70,7 @@ public class ServAppointController {
 		}
 		servAppoint.setUid(ThreadUtil.getUidInt());
 		
+		servAppoint.setPhone(EncryptTools.phoneEncypt(servAppoint.getPhone()));
 		servAppointService.doSave(servAppoint);
 		
 		return new ResultModel(true);

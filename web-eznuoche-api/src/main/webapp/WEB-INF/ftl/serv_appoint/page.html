@@ -10,6 +10,7 @@
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 		<link rel="stylesheet" href="/static/css/iconfont.css">
 		<link rel="stylesheet" href="/static/css/mui.min.css">
+		<link rel="stylesheet" type="text/css" href="/static/css/mui.picker.min.css">
 		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
 		<link rel="stylesheet" type="text/css" href="/static/css/template.css">
 		<link rel="stylesheet" type="text/css" href="/static/css/global.css?v=1">
@@ -34,34 +35,30 @@
 		
 		<div class="main_content">
 			<div class="tit_com">
-				<div class="content_min" style="height:7rem;">
+				<div class="content_min" style="padding-bottom: 0.2rem;">
 					<ul>
 						<li class="flex">
 							<div class="plate">客户姓名</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="kehuName" style="width: 4rem;margin-bottom:0rem;" autocomplete="off">
-								<div class="le"><i class="compile"></i></div>
+								<input type="text" placeholder="" id="kehuName" style="width: 5rem;margin-bottom:0rem;" autocomplete="off">
 							</div>
 						</li>
 						<li class="flex">
-							<div class="plate">客户手机号</div>
+							<div class="plate">联系方式</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="kehuPhone" style="width: 4rem;margin-bottom:0rem;" autocomplete="off">
-								<div class="le"><i class="compile"></i></div>
+								<input type="text" placeholder="请输入手机号" id="kehuPhone" style="width: 5rem;margin-bottom:0rem;" autocomplete="off">
 							</div>
 						</li>
 						<li class="flex">
 							<div class="plate">预约时间</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="appointTime" style="width: 4rem;margin-bottom:0rem;" autocomplete="off">
-								<div class="le"><i class="compile"></i></div>
+								<input type="text" placeholder="" id="appointTime" style="width: 5rem;margin-bottom:0rem;" autocomplete="off">
 							</div>
 						</li>
-						<li class="flex" style="height:2rem;">
+						<li class="flex">
 							<div class="plate">服务内容</div>
 							<div class="plate_dex flex">
-							    <textarea id="servContent" rows="5" style="width: 4rem;margin-bottom:0rem;height:1.9rem;" autocomplete="off"></textarea>
-								<div class="le"><i class="compile"></i></div>
+							    <input type="text" placeholder="" id="servContent" style="width: 5rem;margin-bottom:0rem;" autocomplete="off">
 							</div>
 						</li>
 					</ul>
@@ -92,45 +89,45 @@
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
-						<li class="flex">
+						<!-- <li class="flex">
 							<div class="plate">推荐码</div>
 							<div class="plate_dex flex">
 								<input type="text" placeholder="请输入推荐码，没有可不填写" id="plate_invite_code" style="width: 4rem;" autocomplete="off">
 								<div class="le"><i class="compile"></i></div>
 							</div>
-						</li>
+						</li> -->
 						<div class="The_false" id="${(!(hasLogon!false) || (needBindPhone!false))?string('zhuce_ym', 'add_ym')}">
 						  ${(!(hasLogon!false) || (needBindPhone!false))?string('快捷登录', '登记新车牌')}
 					    </div>
 					    <div align="center" style="margin: 0.2rem;">
-						   同意<a href="http://static.siyufank.cn/eznc/khagreement.html">《客户管理服务协议》</a>
+						   同意<a href="http://static.siyufank.cn/eznc/khagreement.html">《客户预约管理服务协议》</a>
 						</div>
 					  <#else>
 					    <#if dataPage?? && dataPage.datas?? && dataPage.datas?size gt 0>
-					       <table>
+					       <table style="width:100%;">
 					         <thead>
-					           <tr>
-                                 <th>客户姓名</th>
-                                 <th>客户手机号</th>
-                                 <th>预约时间</th>	
-                                 <th>服务内容</th>	
-                                 <th>状态</th>			           
+					           <tr align="center">
+                                 <td>客户姓名</td>
+                                 <td>联系方式</td>
+                                 <td>预约时间</td>	
+                                 <td>服务内容</td>	
+                                 <td>状态</td>			           
 					           </tr>
 					         </thead>
 					         <tbody>
 					          <#list dataPage.datas as d>
-					           <tr>
+					           <tr align="center" <#if (d.emergent)!false>style="color:red;"</#if>>
 					             <td>${(d.kehuName)!}</td>
-					             <td>${(d.phone)!}</td>
-					             <td>${(d.appointTime)?string("yyyy-MM-dd HH:mm")}</td>
-					             <td>${(d.servContent)!}</td>
+					             <td><a href="tel://${(d.phone)!}">${(d.hidePhone)!}</a></td>
+					             <td>${(d.appointTime)?string("MM-dd HH:mm")}</td>
+					             <td id="content_${(d.id)!}" title="${(d.servContent)!""}"><#if ((d.servContent)!"")?length lte 10>${(d.servContent)!""}<#else>${((d.servContent)!"")?substring(0,10)}..<a href="javascript:showContent('#content_${(d.id)!}');">详情</a></#if></td>
 					             <td>${(d.stateName)!}</td>
 					           </tr>
 					          </#list>
 					         </tbody>
 					       </table>
 					    <#else>
-					     暂无数据
+					       <div align="center" style="padding-bottom: 0.3rem;">暂无客户预约数据</div>  
 					    </#if>
 					  </#if>
 					</ul>
@@ -139,13 +136,45 @@
 				</div>	
 			</div>
 			
+			<div style="margin: 0rem 0.35rem;">
+			    <div style="margin: 0rem 0.35rem;">
+				<p>说明：</p>
+				<p>1、本功能主要用于商家记录预约客户信息，比如餐饮行业、房产销售、KTV、足浴、理发店等服务行业均可使用本功能；</p>
+				<p>2、快捷登录后，即可使用本功能；</p>
+				<p>3、北京朝朝盈公司承诺记录客户信息的功能永久免费。</p>
+				<p align="center" style="padding-bottom:0.3rem;">
+				 <img style="width:2rem;height:2rem;margin:0.3rem 0 0.1rem 0;" alt="公众号二维码" src="/static/images/qrcode.png">
+				 <span style="display:block;">关注微信公众号</span>
+				</p>
+			</div>
 		</div>
 		
 		
 <script src="/static/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
 <script src="/static/js/mui.min.js"></script>
+<script src="/static/js/mui.picker.min.js"></script>
 <script src="/static/js/common.js?v=1" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
+
+function showContent(tdId) {
+	mui.toast($(tdId).attr("title"));
+}
+
+mui('.content_min').on('tap', '#appointTime', function(event){
+	var currDate = new Date();
+	var year=currDate.getFullYear(); 
+	var  month=currDate.getMonth()+1;
+	var day=currDate.getDate();
+	var hour= currDate.getHours();
+	var minute = currDate.getMinutes();
+
+	var dtPicker = new mui.DtPicker({"value":"2015-10-10 10:10","beginYear":year,"beginMonth":month,"beginDay":day, "beginHours":hour, "beginMinutes":minute, "endYear":year+1}); 
+	dtPicker.show(function (selectItems) { 
+		var selectedTime = selectItems.y.value + "-" + selectItems.m.value + "-" + selectItems.d.value + " " + selectItems.h.value + ":" + selectItems.i.value;
+		$('#appointTime').val(selectedTime);
+	});
+});
+
 $("#btn").click(function(){
 	var kehuName = $("#kehuName").val();
 	var kehuPhone = $("#kehuPhone").val();
@@ -171,7 +200,7 @@ $("#btn").click(function(){
 		data : {
 			kehuName : kehuName,
 			phone: kehuPhone,
-			appointTime: appointTime,
+			appointTime: appointTime + ":00",
 			servContent: servContent
 		},
 		timeoutFn : function() {

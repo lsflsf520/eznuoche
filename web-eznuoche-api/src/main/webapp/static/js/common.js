@@ -41,7 +41,7 @@ window.Kino = {
                     $(btnSelector).prop('disabled', false); // 防止重复提交，请求成功后才激活按钮
 
                 }else if(response.resultCode == 'NOT_LOGON'){
-                       mui.toast('请登录后重试');
+                       mui.toast('请通过下方的快捷登录后重试');
                        // loginReg();//main.js 显示弹框
                        // console.log(window.location.h)
                 }else if(response.resultCode == "ORD_STATUS_ERR"){

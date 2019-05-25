@@ -5,10 +5,11 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="plate_no" property="plateNo" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
+    <result column="car_brand" property="carBrand" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="BaseColumnList" >
-    id, plate_no, phone, create_time
+    id, plate_no, phone, car_brand, create_time
   </sql>
   <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -22,9 +23,9 @@
   </delete>
   <insert id="insert" parameterType="com.xyz.eznuoche.entity.OfflineUserCar" >
     insert into offline_user_car (id, plate_no, phone, 
-      create_time)
+      car_brand, create_time)
     values (#{id,jdbcType=INTEGER}, #{plateNo,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP})
+      #{carBrand,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPK" parameterType="com.xyz.eznuoche.entity.OfflineUserCar" >
     update offline_user_car
@@ -35,6 +36,9 @@
       <if test="phone != null" >
         phone = #{phone,jdbcType=VARCHAR},
       </if>
+      <if test="carBrand != null" >
+        car_brand = #{carBrand,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -43,16 +47,16 @@
   </update>
   <insert id="insertReturnPK" useGeneratedKeys="true" keyProperty="id" parameterType="com.xyz.eznuoche.entity.OfflineUserCar" >
     insert into offline_user_car (id, plate_no, phone, 
-      create_time)
+      car_brand, create_time)
     values (#{id,jdbcType=INTEGER}, #{plateNo,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{createTime,jdbcType=TIMESTAMP})
+      #{carBrand,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertBatch" parameterType="java.util.List" >
     insert into offline_user_car
-		(id,plate_no,phone,create_time)
+		(id,plate_no,phone,car_brand,create_time)
 	values 
 	<foreach collection="list" item="item" separator="," index="index">
-		(#{item.id,jdbcType=INTEGER},#{item.plateNo,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
+		(#{item.id,jdbcType=INTEGER},#{item.plateNo,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.carBrand,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
 	</foreach>
   </insert>
   <delete id="batchDel" >
@@ -93,6 +97,9 @@
 			</if>
 			<if test="phone != null and phone != ''" >
 				and phone = #{phone,jdbcType=VARCHAR}
+			</if>
+			<if test="carBrand != null and carBrand != ''" >
+				and car_brand = #{carBrand,jdbcType=VARCHAR}
 			</if>
 			<!--<if test="queryParam != null">
 				<if test="queryParam.startDate != null and queryParam.startDate != '' ">

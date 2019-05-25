@@ -1,7 +1,8 @@
 package com.xyz.eznuoche.entity;
 
-import com.xyz.tools.db.bean.BaseEntity;
 import java.util.Date;
+
+import com.xyz.tools.db.bean.BaseEntity;
 
 public class OfflineUserCar extends BaseEntity<Integer> {
     private Integer id;
@@ -9,6 +10,8 @@ public class OfflineUserCar extends BaseEntity<Integer> {
     private String plateNo;
 
     private String phone;
+    
+    private String carBrand;
 
     private Date createTime;
 
@@ -34,6 +37,14 @@ public class OfflineUserCar extends BaseEntity<Integer> {
 
     public void setPhone(String phone) {
         this.phone = phone == null ? null : phone.trim();
+    }
+    
+    public String getCarBrand() {
+        return carBrand;
+    }
+
+    public void setCarBrand(String carBrand) {
+        this.carBrand = carBrand == null ? null : carBrand.trim();
     }
 
     public Date getCreateTime() {

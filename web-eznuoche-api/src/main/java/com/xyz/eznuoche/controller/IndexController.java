@@ -206,7 +206,7 @@ public class IndexController {
 	
 	@PostMapping("offlinePlateNo")
 	@ResponseBody
-	public ResultModel offlinePlateNo(String plateNo, String phone) {
+	public ResultModel offlinePlateNo(String plateNo, String phone, String carBrand) {
 		if(StringUtils.isBlank(plateNo)) {
 			return new ResultModel("ILLEGAL_PARAM", "车牌号不能为空");
 		}
@@ -220,8 +220,9 @@ public class IndexController {
 		}
 		
 		OfflineUserCar updata = new OfflineUserCar();
-		updata.setPlateNo(plateNo);
+		updata.setPlateNo(plateNo.toUpperCase());
 		updata.setPhone(EncryptTools.phoneEncypt(phone));
+		updata.setCarBrand(carBrand);
 		updata.setCreateTime(new Date());
 		
 		offlineUserCarService.insert(updata);
