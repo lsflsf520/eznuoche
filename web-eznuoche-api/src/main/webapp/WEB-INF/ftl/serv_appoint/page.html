@@ -1,40 +1,36 @@
 <!DOCTYPE html>
-<!-- saved from url=(0039)https://h5.hxykinsurance.com/index.html -->
-<html lang="en" style="font-size: 50px;">
-    <head>
-		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    
-		<title>客户预约管理</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<link rel="stylesheet" href="/static/css/iconfont.css">
-		<link rel="stylesheet" href="/static/css/mui.min.css">
-		<link rel="stylesheet" type="text/css" href="/static/css/mui.picker.min.css">
-		<link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
-		<link rel="stylesheet" type="text/css" href="/static/css/template.css">
-		<link rel="stylesheet" type="text/css" href="/static/css/global.css?v=1">
-		<link rel="stylesheet" type="text/css" href="/static/css/index.css?v=1">
-		<link rel="stylesheet" type="text/css" href="/static/css/index_ext.css?v=1">
-		<link rel="stylesheet" type="text/css" href="/static/css/redColor.css?v=1">
-		
-		<script src="/static/js/hm.js"></script>
-		<script type="text/javascript" src="/static/js/jquery-1.12.2.js"></script>
-		<script src="/static/js/main.js?v=1" type="text/javascript"></script>
-    </head>
-  
-    <body class="mui-ios mui-ios-11 mui-ios-11-0">
-	    <!-- <div class="hader_zuij">
-		    <div class="ij_hader">
-			    <div class="er_top">
-			    </div> 
-			    <div class="er_cet">车牌直录</div>
-				<div class="er_btm er_btm"></div>
-			</div>
-		</div> -->
-		
-		<div class="main_content">
-			<div class="tit_com">
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>客户预约管理</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/static/css/mui.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/mui.picker.min.css">
+    <link rel="stylesheet" href="/static/css/global.css?v=1">
+    <link rel="stylesheet" href="/static/css/redColor.css?v=1">
+    <link rel="stylesheet" href="/static/css/template.css?v=1">
+    <link rel="stylesheet" href="/static/css/index.css?v=1">
+    <link rel="stylesheet" href="/static/css/iconfont.css" />
+    <style>
+        .mui-pull-bottom-tips {  text-align: center;  background-color: #fff;  font-size: 15px;  line-height: 40px;  color: #777;  }
+        .mui-fullscreen{  top: 5rem; height: auto; }
+        .mui-segmented-control.mui-scroll-wrapper .mui-scroll{width: 100%;display: flex;}
+        .mui-segmented-control.mui-scroll-wrapper .mui-scroll a{width: 50%;padding: 0;}
+        .mui-segmented-control.mui-segmented-control-inverted .mui-control-item.mui-active{background: url("../image/chexiandingdanxiahuaxin@2x.png") no-repeat bottom center; background-size: 100% .02rem;color: #000;}
+        .mui-slider .mui-segmented-control.mui-segmented-control-inverted~.mui-slider-group .mui-slider-item{border-top: 0;}
+        .mui-segmented-control.mui-scroll-wrapper{height: 40px;}
+        .mui-table-view-cell:after{right: 15px;}
+        .mask{z-index: 2;}
+        .jiz_dongt .gt_huxzlg{
+        	z-index: 100000;
+        }
+    </style>
+</head>
+<body>
+<div class="my_deqianb">
+    <div class="tit_com">
 				<div class="content_min" style="padding-bottom: 0.2rem;">
 					<ul>
 						<li class="flex">
@@ -68,92 +64,90 @@
 					</div>
 				</div>	
 			</div>
-		    
-		    <div class="tit_com">
-				<div class="content_min">
-					<ul>
-					  <#if !(hasLogon!false) || (needBindPhone!false)>
-						<li class="flex">
-							<div class="plate">手机号</div>
-							<div class="plate_dex flex">
-								<!--<b class="car_number">请输入您的姓名</b>-->
-								<input type="number" id="plate_phone" placeholder="请输入您的手机号">
-								<input type="button" value="获取验证码" onclick="sendCode(this)">
-							</div>
-						</li>
-						
-						<li class="flex">
-							<div class="plate">短信验证码</div>
-							<div class="plate_dex flex">
-								<input id="plate_smscode" type="text" placeholder="请输入短信验证码" autocomplete="off">
-								<div class="le"><i class="compile"></i></div>
-							</div>
-						</li>
-						<!-- <li class="flex">
-							<div class="plate">推荐码</div>
-							<div class="plate_dex flex">
-								<input type="text" placeholder="请输入推荐码，没有可不填写" id="plate_invite_code" style="width: 4rem;" autocomplete="off">
-								<div class="le"><i class="compile"></i></div>
-							</div>
-						</li> -->
-						<div class="The_false" id="${(!(hasLogon!false) || (needBindPhone!false))?string('zhuce_ym', 'add_ym')}">
-						  ${(!(hasLogon!false) || (needBindPhone!false))?string('快捷登录', '登记新车牌')}
-					    </div>
-					    <div align="center" style="margin: 0.2rem;">
-						   同意<a href="http://static.siyufank.cn/eznc/khagreement.html">《客户预约管理服务协议》</a>
-						</div>
-					  <#else>
-					    <#if dataPage?? && dataPage.datas?? && dataPage.datas?size gt 0>
-					       <table style="width:100%;">
-					         <thead>
-					           <tr align="center">
-                                 <td>客户姓名</td>
-                                 <td>联系方式</td>
-                                 <td>预约时间</td>	
-                                 <td>服务内容</td>	
-                                 <td>状态</td>			           
-					           </tr>
-					         </thead>
-					         <tbody>
-					          <#list dataPage.datas as d>
-					           <tr align="center" <#if (d.emergent)!false>style="color:red;"</#if>>
-					             <td>${(d.kehuName)!}</td>
-					             <td><a href="tel://${(d.phone)!}">${(d.hidePhone)!}</a></td>
-					             <td>${(d.appointTime)?string("MM-dd HH:mm")}</td>
-					             <td id="content_${(d.id)!}" title="${(d.servContent)!""}"><#if ((d.servContent)!"")?length lte 10>${(d.servContent)!""}<#else>${((d.servContent)!"")?substring(0,10)}..<a href="javascript:showContent('#content_${(d.id)!}');">详情</a></#if></td>
-					             <td>${(d.stateName)!}</td>
-					           </tr>
-					          </#list>
-					         </tbody>
-					       </table>
-					    <#else>
-					       <div align="center" style="padding-bottom: 0.3rem;">暂无客户预约数据</div>  
-					    </#if>
-					  </#if>
-					</ul>
-					
-					
-				</div>	
-			</div>
-			
-			<div style="margin: 0rem 0.35rem;">
-			    <div style="margin: 0rem 0.35rem;">
-				<p>说明：</p>
-				<p>1、本功能主要用于商家记录预约客户信息，比如餐饮行业、房产销售、KTV、足浴、理发店等服务行业均可使用本功能；</p>
-				<p>2、快捷登录后，即可使用本功能；</p>
-				<p>3、北京朝朝盈公司承诺记录客户信息的功能永久免费。</p>
-				<p align="center" style="padding-bottom:0.3rem;">
-				 <img style="width:2rem;height:2rem;margin:0.3rem 0 0.1rem 0;" alt="公众号二维码" src="/static/images/qrcode.png">
-				 <span style="display:block;">关注微信公众号</span>
-				</p>
-			</div>
-		</div>
-		
-		
-<script src="/static/js/bootstrap.js" type="text/javascript" charset="utf-8"></script>
+</div>
+<div class="kqh_tuanx">
+    <div class="mui-content" id="logDiv">
+        <ul class="mui-table-view" id="yj_shouru">
+        
+        </ul>
+    </div>
+
+</div>
+<script src="/static/js/jquery-1.12.2.js" type="text/javascript" charset="utf-8"></script>
 <script src="/static/js/mui.min.js"></script>
+<script src="/static/js/mui.pullToRefresh.js?v=1"></script>
+<script src="/static/js/mui.pullToRefresh.material.js?v=1"></script>
 <script src="/static/js/mui.picker.min.js"></script>
-<script src="/static/js/common.js?v=1" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/apiurl.js?v=1 " type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/mask.js?v=1" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/common.js?v=1"></script>
+<script src="/static/js/main.js?v=1" type="text/javascript" charset="utf-8"></script>
+<script src="/static/js/template.js" type="text/javascript" charset="utf-8"></script>
+<script>
+    var page = 1;
+    var page2 = 1;
+    mui.init();
+    (function($) {
+        //阻尼系数
+        $.ready(function() {
+            //循环初始化所有下拉刷新，上拉加载。
+                $("#logDiv").pullToRefresh({
+                    up: {
+                        callback: function() {
+                            var self = this;
+                            setTimeout(function() {
+                                var ul = self.element.querySelector('.mui-table-view');
+                                ul.appendChild(createFragment(ul, 5,self));
+                                self.endPullUpToRefresh();
+                            }, 1000);
+                        },
+                        auto:true
+                    }
+                });
+            var createFragment = function(ul, count, self) {
+                var fragment = document.createDocumentFragment();
+                (function(){
+                        var commit = {
+                            timeoutFn: function () {
+                                mui.toast('请求超时')
+                            }
+                        };
+                        function successfn(data) {
+                        	 var Data = data.model
+						    if(page > Data.totalPages){//当datas.length为0时，表示没有数据了
+						        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
+						    }else{
+                                page = data.model.currPage + 1;
+                                var li;
+                                for (var i = 0; i < data.model.datas.length; i++) {
+                                    li = document.createElement('li');
+                                    li.className = 'mui-table-view-cell';
+                                    
+                                    li.innerHTML = '<div class="yj_shouruz"><div class="uz_left"><p><span class="col008">'
+                                                    +data.model.datas[i].kehuName+'</span><span><a href="tel://'+data.model.datas[i].phone+'">'+data.model.datas[i].hidePhone+'</a></span></p><p>'
+                                                    +data.model.datas[i].servContent+'</p></div><div class="uz_right"><p>'
+                                                    + data.model.datas[i].appointTimeStr + '</p><p>'
+                                                    +data.model.datas[i].stateName+'</p></div></div>';
+                                                    
+                                    document.getElementById('yj_shouru').appendChild(li);
+                                }
+	                            if(page >= Data.totalPages){//当datas.length为0时，表示没有数据了
+							        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
+							    }else{
+									self.endPullUpToRefresh();//当为false或空时，底部出现正在加载，滑动到下一页
+								}
+		                     }   
+		                 }
+                         Kino.ajax('/servAppoint/loadMyServAppoints.do?currPage='+page, successfn, commit);
+                })()
+                return fragment;
+            };
+        });
+    })(mui);
+    //我的钱包接口
+     
+</script>
+
 <script type="text/javascript">
 
 function showContent(tdId) {
@@ -209,5 +203,6 @@ $("#btn").click(function(){
 	});
 });
 </script>
-	</body>
+
+</body>
 </html>

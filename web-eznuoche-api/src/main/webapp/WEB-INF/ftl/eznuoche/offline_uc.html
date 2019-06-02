@@ -36,17 +36,10 @@
 			<div class="tit_com">
 				<div class="content_min">
 					<ul>
-						<li class="flex">
+					    <li class="flex">
 							<div class="plate">车牌号</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="plateNo" style="width: 4rem;" autocomplete="off">
-								<div class="le"><i class="compile"></i></div>
-							</div>
-						</li>
-						<li class="flex">
-							<div class="plate">手机号</div>
-							<div class="plate_dex flex">
-								<input type="text" placeholder="" id="phone" style="width: 4rem;" autocomplete="off">
+								<input type="text" value="湘A" placeholder="" onBlur="checkPlateNo();" id="plateNo" style="width: 4rem;" autocomplete="off">
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
@@ -57,8 +50,15 @@
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
+					    <li class="flex">
+							<div class="plate">手机号</div>
+							<div class="plate_dex flex">
+								<input type="text" placeholder="" id="phone" style="width: 4rem;" autocomplete="off">
+								<div class="le"><i class="compile"></i></div>
+							</div>
+						</li>
 					</ul>
-					
+					<div id="errDiv" align="center" style="color:red;"></div>
 					<div class="The_false" id="btn">
 						保   存
 					</div>
@@ -72,6 +72,19 @@
 <script src="/static/js/mui.min.js"></script>
 <script src="/static/js/common.js?v=1" type="text/javascript" charset="utf-8"></script>
 <script type="text/javascript">
+function checkPlateNo() {
+	var plateNo = $("#plateNo").val();
+	if(!plateNo || plateNo.length < 6){
+		mui.toast("车牌号格式不正确");
+		return;
+	}
+	Kino.ajax('/plateNo/exists.do?plateNo=' + plateNo, function(response, status, xhr) {
+		$("#errDiv").html("");
+	},{},function(response, status, xhr){
+		$("#errDiv").html(response.resultMsg);
+	});
+}
+
 $("#btn").click(function(){
 	var plateNo = $("#plateNo").val();
 	var phone = $("#phone").val();
@@ -86,7 +99,9 @@ $("#btn").click(function(){
 	}
 	Kino.ajax('/offlinePlateNo.do', function(response, status, xhr) {
 		mui.toast("数据录入成功");
-		window.location.reload();
+		$("#plateNo").val("湘A");
+		$("#phone").val("");
+		$("#carBrand").val("");
 	}, {
 		type : "POST",
 		data : {

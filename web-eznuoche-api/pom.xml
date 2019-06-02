@@ -186,18 +186,35 @@
 		            <skip>true</skip> <!-- deploy 时忽略此model  -->
 		        </configuration>
 		    </plugin>
+		    <!-- <plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>8.1.12.v20130726</version>
+				<configuration>
+					<contextXml>src/test/java/jetty-contexts.xml</contextXml>
+					<webAppConfig>
+						<defaultsDescriptor>src/test/java/webdefault.xml</defaultsDescriptor>
+						<contextPath>/solr</contextPath>
+					</webAppConfig>
+				</configuration>
+			</plugin> -->
 			<plugin>
 				<groupId>org.eclipse.jetty</groupId>
 				<artifactId>jetty-maven-plugin</artifactId>
 				<version>9.4.2.v20170220</version>
 				<configuration>
 					<scanIntervalSeconds>0</scanIntervalSeconds>
-					<webApp>
+					<!-- <webApp>
 						<contextPath>/</contextPath>
-					</webApp>
+					</webApp> -->
 					<httpConnector>
 						<port>8080</port>
 					</httpConnector>
+					<contextXml>src/test/java/jetty-contexts.xml</contextXml>
+					<webAppConfig>
+						<defaultsDescriptor>src/test/java/webdefault.xml</defaultsDescriptor>
+						<contextPath>/</contextPath>
+					</webAppConfig>
 				</configuration>
 			</plugin>
 		</plugins>

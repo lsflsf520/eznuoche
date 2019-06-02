@@ -6,6 +6,7 @@ import org.apache.commons.lang.StringUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xyz.tools.common.constant.CheckState;
+import com.xyz.tools.common.utils.DateUtil;
 import com.xyz.tools.common.utils.EncryptTools;
 import com.xyz.tools.common.utils.StringUtil;
 import com.xyz.tools.db.bean.BaseEntity;
@@ -130,6 +131,10 @@ public class ServAppoint extends BaseEntity<Integer> {
     @JsonIgnore
     public String getDecryptPhone() {
     	return EncryptTools.phoneDecrypt(this.getPhone());
+    }
+    
+    public String getAppointTimeStr() {
+    	return DateUtil.formatDate(this.appointTime, "MM-dd HH:mm");
     }
     
     /**

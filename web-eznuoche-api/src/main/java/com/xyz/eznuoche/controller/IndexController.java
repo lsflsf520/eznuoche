@@ -230,6 +230,20 @@ public class IndexController {
 		return new ResultModel(true);
 	}
 	
+	@RequestMapping("/plateNo/exists")
+	@ResponseBody
+	public ResultModel exists(String plateNo) {
+		OfflineUserCar dbData = offlineUserCarService.loadByPlateNo(plateNo);
+		if(dbData != null) {
+			return new ResultModel("ALREADY_EXIST", "该车牌已录入");
+		}
+		UserCar ucar = userCarService.loadByPlateNo(plateNo);
+		if(ucar != null) {
+			return new ResultModel("ALREADY_EXIST", "该车牌已注册");
+		}
+		return new ResultModel(true);
+	}
+	
 	@RequestMapping("/{msgType}/notify")
 	@ResponseBody
 	public ResultModel wxNotify(@PathVariable MsgType msgType, String plateNo) {
