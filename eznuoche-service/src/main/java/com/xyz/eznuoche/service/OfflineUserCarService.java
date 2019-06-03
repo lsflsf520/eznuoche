@@ -39,4 +39,8 @@ public class OfflineUserCarService extends AbstractBaseService<Integer, OfflineU
     	
     	return this.findOne(query, "id", Direction.DESC);
     }
+    
+    public int loadNum() {
+    	return this.offlineUserCarDao.loadNum();
+    }
 }

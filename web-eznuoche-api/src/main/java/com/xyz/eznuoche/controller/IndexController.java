@@ -200,8 +200,8 @@ public class IndexController {
 	
 	@RequestMapping("offline")
 	public ModelAndView offline(){
-		
-		return new ModelAndView("eznuoche/offline_uc");
+		int currNum = offlineUserCarService.loadNum();
+		return new ModelAndView("eznuoche/offline_uc").addObject("currNum", currNum);
 	}
 	
 	@PostMapping("offlinePlateNo")

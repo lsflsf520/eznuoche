@@ -115,4 +115,8 @@
 		</trim>
 	</where>
   </select>
+  
+  <select id="loadNum" resultType="java.lang.Integer">
+    select count(1) from offline_user_car
+  </select>
 </mapper>
