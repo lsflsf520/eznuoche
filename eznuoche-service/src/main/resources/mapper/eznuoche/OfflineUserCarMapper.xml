@@ -6,10 +6,15 @@
     <result column="plate_no" property="plateNo" jdbcType="VARCHAR" />
     <result column="phone" property="phone" jdbcType="VARCHAR" />
     <result column="car_brand" property="carBrand" jdbcType="VARCHAR" />
+    <result column="province" property="province" jdbcType="VARCHAR" />
+    <result column="city" property="city" jdbcType="VARCHAR" />
+    <result column="county" property="county" jdbcType="VARCHAR" />
+    <result column="detail_addr" property="detailAddr" jdbcType="VARCHAR" />
+    <result column="ip" property="ip" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="BaseColumnList" >
-    id, plate_no, phone, car_brand, create_time
+    id, plate_no, phone, car_brand, province, city, county, detail_addr, ip, create_time
   </sql>
   <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -23,9 +28,13 @@
   </delete>
   <insert id="insert" parameterType="com.xyz.eznuoche.entity.OfflineUserCar" >
     insert into offline_user_car (id, plate_no, phone, 
-      car_brand, create_time)
+      car_brand, province, city, 
+      county, detail_addr, ip, 
+      create_time)
     values (#{id,jdbcType=INTEGER}, #{plateNo,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{carBrand,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+      #{carBrand,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{county,jdbcType=VARCHAR}, #{detailAddr,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <update id="updateByPK" parameterType="com.xyz.eznuoche.entity.OfflineUserCar" >
     update offline_user_car
@@ -39,6 +48,21 @@
       <if test="carBrand != null" >
         car_brand = #{carBrand,jdbcType=VARCHAR},
       </if>
+      <if test="province != null" >
+        province = #{province,jdbcType=VARCHAR},
+      </if>
+      <if test="city != null" >
+        city = #{city,jdbcType=VARCHAR},
+      </if>
+      <if test="county != null" >
+        county = #{county,jdbcType=VARCHAR},
+      </if>
+      <if test="detailAddr != null" >
+        detail_addr = #{detailAddr,jdbcType=VARCHAR},
+      </if>
+      <if test="ip != null" >
+        ip = #{ip,jdbcType=VARCHAR},
+      </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
       </if>
@@ -47,16 +71,20 @@
   </update>
   <insert id="insertReturnPK" useGeneratedKeys="true" keyProperty="id" parameterType="com.xyz.eznuoche.entity.OfflineUserCar" >
     insert into offline_user_car (id, plate_no, phone, 
-      car_brand, create_time)
+      car_brand, province, city, 
+      county, detail_addr, ip, 
+      create_time)
     values (#{id,jdbcType=INTEGER}, #{plateNo,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
-      #{carBrand,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+      #{carBrand,jdbcType=VARCHAR}, #{province,jdbcType=VARCHAR}, #{city,jdbcType=VARCHAR}, 
+      #{county,jdbcType=VARCHAR}, #{detailAddr,jdbcType=VARCHAR}, #{ip,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=TIMESTAMP})
   </insert>
   <insert id="insertBatch" parameterType="java.util.List" >
     insert into offline_user_car
-		(id,plate_no,phone,car_brand,create_time)
+		(id,plate_no,phone,car_brand,province,city,county,detail_addr,ip,create_time)
 	values 
 	<foreach collection="list" item="item" separator="," index="index">
-		(#{item.id,jdbcType=INTEGER},#{item.plateNo,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.carBrand,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
+		(#{item.id,jdbcType=INTEGER},#{item.plateNo,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.carBrand,jdbcType=VARCHAR},#{item.province,jdbcType=VARCHAR},#{item.city,jdbcType=VARCHAR},#{item.county,jdbcType=VARCHAR},#{item.detailAddr,jdbcType=VARCHAR},#{item.ip,jdbcType=VARCHAR},#{item.createTime,jdbcType=TIMESTAMP})
 	</foreach>
   </insert>
   <delete id="batchDel" >
@@ -100,6 +128,21 @@
 			</if>
 			<if test="carBrand != null and carBrand != ''" >
 				and car_brand = #{carBrand,jdbcType=VARCHAR}
+			</if>
+			<if test="province != null and province != ''" >
+				and province = #{province,jdbcType=VARCHAR}
+			</if>
+			<if test="city != null and city != ''" >
+				and city = #{city,jdbcType=VARCHAR}
+			</if>
+			<if test="county != null and county != ''" >
+				and county = #{county,jdbcType=VARCHAR}
+			</if>
+			<if test="detailAddr != null and detailAddr != ''" >
+				and detail_addr = #{detailAddr,jdbcType=VARCHAR}
+			</if>
+			<if test="ip != null and ip != ''" >
+				and ip = #{ip,jdbcType=VARCHAR}
 			</if>
 			<!--<if test="queryParam != null">
 				<if test="queryParam.startDate != null and queryParam.startDate != '' ">

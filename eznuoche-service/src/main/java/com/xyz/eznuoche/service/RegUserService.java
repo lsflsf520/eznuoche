@@ -24,6 +24,7 @@ import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.RandomUtil;
 import com.xyz.tools.common.utils.RegexUtil;
 import com.xyz.tools.common.utils.StringUtil;
+import com.xyz.tools.common.utils.ThreadUtil;
 import com.xyz.tools.db.bean.PageData;
 import com.xyz.tools.db.dao.IBaseDao;
 import com.xyz.tools.db.service.AbstractBaseService;
@@ -158,6 +159,9 @@ public class RegUserService extends AbstractBaseService<Integer, RegUser> {
 				String myCode = genMyCode("u");
 				updata.setMyCode(myCode);
 				updata.setNickName(nickName);
+				
+				String clientIP = ThreadUtil.getClientIP();
+				updata.setRegIp(clientIP);
 				
 //		try{
 //			LogUtils.info("nickName %s reg from ip %s", nickName, ip);

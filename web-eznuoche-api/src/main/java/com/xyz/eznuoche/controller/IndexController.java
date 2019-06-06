@@ -206,7 +206,8 @@ public class IndexController {
 	
 	@PostMapping("offlinePlateNo")
 	@ResponseBody
-	public ResultModel offlinePlateNo(String plateNo, String phone, String carBrand) {
+	public ResultModel offlinePlateNo(String plateNo, String phone, String carBrand,
+			                         String province, String city, String county, String detailAddr) {
 		if(StringUtils.isBlank(plateNo)) {
 			return new ResultModel("ILLEGAL_PARAM", "车牌号不能为空");
 		}
@@ -223,6 +224,11 @@ public class IndexController {
 		updata.setPlateNo(plateNo.toUpperCase());
 		updata.setPhone(EncryptTools.phoneEncypt(phone));
 		updata.setCarBrand(carBrand);
+		updata.setProvince(province);
+		updata.setCity(city);
+		updata.setCounty(county);
+		updata.setDetailAddr(detailAddr);
+		updata.setIp(ThreadUtil.getClientIP());
 		updata.setCreateTime(new Date());
 		
 		offlineUserCarService.insert(updata);

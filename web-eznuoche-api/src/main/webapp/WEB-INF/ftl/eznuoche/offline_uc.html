@@ -57,6 +57,22 @@
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
+						<li class="flex">
+							<div class="plate">当前地区</div>
+							<div class="plate_dex flex">
+								<input type="text" placeholder="" value="湖南省" id="province" style="width: 1.6rem;" autocomplete="off">
+								<input type="text" placeholder="" value="长沙市" id="city" style="width: 1.6rem;" autocomplete="off">
+								<input type="text" placeholder="" value="岳麓区" id="county" style="width: 1.6rem;" autocomplete="off">
+								<!-- <div class="le"><i class="compile"></i></div> -->
+							</div>
+						</li>
+						<li class="flex">
+							<div class="plate">具体地址</div>
+							<div class="plate_dex flex">
+								<input type="text" placeholder="建议填写小区或标志建筑物名称" id="detailAddr" style="width: 4rem;" autocomplete="off">
+								<div class="le"><i class="compile"></i></div>
+							</div>
+						</li>
 					</ul>
 					<div id="errDiv" align="center" style="color:red;"></div>
 					<div class="The_false" id="btn">
@@ -90,6 +106,10 @@ $("#btn").click(function(){
 	var plateNo = $("#plateNo").val();
 	var phone = $("#phone").val();
 	var carBrand = $("#carBrand").val();
+	var province = $("#province").val();
+	var city = $("#city").val();
+	var county = $("#county").val();
+	var detailAddr = $("#detailAddr").val();
 	if(!plateNo || plateNo.length < 6){
 		mui.toast("车牌号格式不正确");
 		return;
@@ -108,7 +128,11 @@ $("#btn").click(function(){
 		data : {
 			plateNo : plateNo,
 			phone: phone,
-			carBrand: carBrand
+			carBrand: carBrand,
+			province: province,
+			city: city,
+			county: county,
+			detailAddr: detailAddr
 		},
 		timeoutFn : function() {
 			mui.toast('请求超时')

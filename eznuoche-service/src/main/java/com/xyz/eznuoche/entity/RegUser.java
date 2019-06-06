@@ -28,6 +28,8 @@ public class RegUser extends BaseEntity<Integer> {
     private String myCode;
 
     private String inviteUid;
+    
+    private String regIp;
 
     private CommonStatus state;
 
@@ -98,6 +100,14 @@ public class RegUser extends BaseEntity<Integer> {
 
     public void setInviteUid(String inviteUid) {
         this.inviteUid = inviteUid == null ? null : inviteUid.trim();
+    }
+    
+    public String getRegIp() {
+        return regIp;
+    }
+
+    public void setRegIp(String regIp) {
+        this.regIp = regIp == null ? null : regIp.trim();
     }
 
     public CommonStatus getState() {

@@ -4,7 +4,6 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.xyz.tools.common.constant.CheckState;
 import com.xyz.tools.common.utils.DateUtil;
 import com.xyz.tools.common.utils.EncryptTools;
@@ -128,7 +127,6 @@ public class ServAppoint extends BaseEntity<Integer> {
     	return StringUtils.isBlank(this.getPhone()) ? null : StringUtil.stringHide(getDecryptPhone());
     }
     
-    @JsonIgnore
     public String getDecryptPhone() {
     	return EncryptTools.phoneDecrypt(this.getPhone());
     }

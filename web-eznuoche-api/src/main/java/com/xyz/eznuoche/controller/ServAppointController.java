@@ -35,8 +35,8 @@ public class ServAppointController {
 			suser = LogonUtil.getSessionUser();
 			mav.addObject("hasLogon", true);
 			
-			PageData<ServAppoint> dataPage = servAppointService.loadMyServAppoints(suser.getUidInt(), 1);
-			mav.addObject("dataPage", dataPage);
+//			PageData<ServAppoint> dataPage = servAppointService.loadMyServAppoints(suser.getUidInt(), 1);
+//			mav.addObject("dataPage", dataPage);
 		} catch (BaseRuntimeException e) {
 			LogUtils.warn(e.getMessage());
 		}

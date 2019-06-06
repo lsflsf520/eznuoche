@@ -10,13 +10,14 @@
     <result column="head_img" property="headImg" jdbcType="VARCHAR" />
     <result column="my_code" property="myCode" jdbcType="VARCHAR" />
     <result column="invite_uid" property="inviteUid" jdbcType="VARCHAR" />
+    <result column="reg_ip" property="regIp" jdbcType="VARCHAR" />
     <result column="state" property="state" jdbcType="CHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="last_uptime" property="lastUptime" jdbcType="TIMESTAMP" />
   </resultMap>
   <sql id="BaseColumnList" >
-    id, nick_name, phone, passwd, sex, head_img, my_code, invite_uid, state, create_time, 
-    last_uptime
+    id, nick_name, phone, passwd, sex, head_img, my_code, invite_uid, reg_ip, state, 
+    create_time, last_uptime
   </sql>
   <select id="findByPK" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -31,12 +32,14 @@
   <insert id="insert" parameterType="com.xyz.eznuoche.entity.RegUser" >
     insert into reg_user (id, nick_name, phone, 
       passwd, sex, head_img, 
-      my_code, invite_uid, state, 
-      create_time, last_uptime)
+      my_code, invite_uid, reg_ip, 
+      state, create_time, last_uptime
+      )
     values (#{id,jdbcType=INTEGER}, #{nickName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{passwd,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, #{headImg,jdbcType=VARCHAR}, 
-      #{myCode,jdbcType=VARCHAR}, #{inviteUid,jdbcType=VARCHAR}, #{state,jdbcType=CHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP})
+      #{myCode,jdbcType=VARCHAR}, #{inviteUid,jdbcType=VARCHAR}, #{regIp,jdbcType=VARCHAR}, 
+      #{state,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <update id="updateByPK" parameterType="com.xyz.eznuoche.entity.RegUser" >
     update reg_user
@@ -62,6 +65,9 @@
       <if test="inviteUid != null" >
         invite_uid = #{inviteUid,jdbcType=VARCHAR},
       </if>
+      <if test="regIp != null" >
+        reg_ip = #{regIp,jdbcType=VARCHAR},
+      </if>
       <if test="state != null" >
         state = #{state,jdbcType=CHAR},
       </if>
@@ -77,19 +83,21 @@
   <insert id="insertReturnPK" useGeneratedKeys="true" keyProperty="id" parameterType="com.xyz.eznuoche.entity.RegUser" >
     insert into reg_user (id, nick_name, phone, 
       passwd, sex, head_img, 
-      my_code, invite_uid, state, 
-      create_time, last_uptime)
+      my_code, invite_uid, reg_ip, 
+      state, create_time, last_uptime
+      )
     values (#{id,jdbcType=INTEGER}, #{nickName,jdbcType=VARCHAR}, #{phone,jdbcType=VARCHAR}, 
       #{passwd,jdbcType=VARCHAR}, #{sex,jdbcType=CHAR}, #{headImg,jdbcType=VARCHAR}, 
-      #{myCode,jdbcType=VARCHAR}, #{inviteUid,jdbcType=VARCHAR}, #{state,jdbcType=CHAR}, 
-      #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP})
+      #{myCode,jdbcType=VARCHAR}, #{inviteUid,jdbcType=VARCHAR}, #{regIp,jdbcType=VARCHAR}, 
+      #{state,jdbcType=CHAR}, #{createTime,jdbcType=TIMESTAMP}, #{lastUptime,jdbcType=TIMESTAMP}
+      )
   </insert>
   <insert id="insertBatch" parameterType="java.util.List" >
     insert into reg_user
-		(id,nick_name,phone,passwd,sex,head_img,my_code,invite_uid,state,create_time,last_uptime)
+		(id,nick_name,phone,passwd,sex,head_img,my_code,invite_uid,reg_ip,state,create_time,last_uptime)
 	values 
 	<foreach collection="list" item="item" separator="," index="index">
-		(#{item.id,jdbcType=INTEGER},#{item.nickName,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.passwd,jdbcType=VARCHAR},#{item.sex,jdbcType=CHAR},#{item.headImg,jdbcType=VARCHAR},#{item.myCode,jdbcType=VARCHAR},#{item.inviteUid,jdbcType=VARCHAR},#{item.state,jdbcType=CHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.lastUptime,jdbcType=TIMESTAMP})
+		(#{item.id,jdbcType=INTEGER},#{item.nickName,jdbcType=VARCHAR},#{item.phone,jdbcType=VARCHAR},#{item.passwd,jdbcType=VARCHAR},#{item.sex,jdbcType=CHAR},#{item.headImg,jdbcType=VARCHAR},#{item.myCode,jdbcType=VARCHAR},#{item.inviteUid,jdbcType=VARCHAR},#{item.regIp,jdbcType=VARCHAR},#{item.state,jdbcType=CHAR},#{item.createTime,jdbcType=TIMESTAMP},#{item.lastUptime,jdbcType=TIMESTAMP})
 	</foreach>
   </insert>
   <delete id="batchDel" >
@@ -145,6 +153,9 @@
 			</if>
 			<if test="inviteUid != null and inviteUid != ''" >
 				and invite_uid = #{inviteUid,jdbcType=VARCHAR}
+			</if>
+			<if test="regIp != null and regIp != ''" >
+				and reg_ip = #{regIp,jdbcType=VARCHAR}
 			</if>
 			<if test="state != null" >
 				and state = #{state,jdbcType=CHAR}

@@ -60,18 +60,64 @@
 					</ul>
 					
 					<div class="The_false" id="btn">
-						保   存
+						添加预约客户
 					</div>
 				</div>	
 			</div>
 </div>
 <div class="kqh_tuanx">
-    <div class="mui-content" id="logDiv">
-        <ul class="mui-table-view" id="yj_shouru">
-        
-        </ul>
-    </div>
+	 <#if !(hasLogon!false) || (needBindPhone!false)>
+         <div class="tit_com">
+			<div class="content_min">
+				<ul>
+					<li class="flex">
+						<div class="plate">手机号</div>
+						<div class="plate_dex flex">
+							<!--<b class="car_number">请输入您的姓名</b>-->
+							<input type="number" id="plate_phone" placeholder="请输入您的手机号" style="width: 4.7rem;margin-bottom:0rem;" autocomplete="off">
+							
+						</div>
+					</li>
+					
+					<li class="flex">
+						<div class="plate">短信验证码</div>
+						<div class="plate_dex flex">
+							<input id="plate_smscode" type="text" style="width: 3rem;margin-bottom:0rem;margin-right: 0.1rem;" autocomplete="off">
+							<input type="button" value="获取验证码" onclick="sendCode(this)" style="padding: 6px 4px;width: 1.6rem;">
+						</div>
+					</li>
+					<!-- <li class="flex">
+						<div class="plate">推荐码</div>
+						<div class="plate_dex flex">
+							<input type="text" placeholder="请输入推荐码，没有可不填写" id="plate_invite_code" style="width: 4rem;" autocomplete="off">
+							<div class="le"><i class="compile"></i></div>
+						</div>
+					</li> -->
+					<div class="The_false" id="zhuce_ym">
+					    快捷登录
+				    </div>
+				    <div align="center" style="margin: 0.2rem;">
+					   同意<a href="http://static.siyufank.cn/eznc/khagreement.html">《客户预约管理服务协议》</a>
+					</div>
+	  <#else>
+		    <div class="mui-content" id="logDiv">
+		        <ul class="mui-table-view" id="yj_shouru">
+		        
+		        </ul>
+		    </div>
+      </#if>
 
+    <div style="margin: 1rem 0.35rem 0.35rem 0.2rem">
+			    <div style="margin: 0rem 0.35rem;">
+				<p>说明：</p>
+				<p>1、本功能主要用于商家记录预约客户信息，比如餐饮行业、房产销售、KTV、足浴、理发店等服务行业均可使用本功能；</p>
+				<p>2、快捷登录后，即可使用本功能；</p>
+				<p>3、北京朝朝盈公司承诺记录客户信息的功能永久免费。</p>
+				<p align="center" style="padding-bottom:0.3rem;">
+				 <img style="width:2rem;height:2rem;margin:0.3rem 0 0.1rem 0;" alt="公众号二维码" src="/static/images/qrcode.png">
+				 <span style="display:block;">关注微信公众号</span>
+				</p>
+	</div>
 </div>
 <script src="/static/js/jquery-1.12.2.js" type="text/javascript" charset="utf-8"></script>
 <script src="/static/js/mui.min.js"></script>
@@ -84,64 +130,67 @@
 <script src="/static/js/main.js?v=1" type="text/javascript" charset="utf-8"></script>
 <script src="/static/js/template.js" type="text/javascript" charset="utf-8"></script>
 <script>
-    var page = 1;
-    var page2 = 1;
-    mui.init();
+var page = 1;
+var page2 = 1;
+mui.init();
+
+function createFragment(ul, self) {
+    var commit = {
+                timeoutFn: function () {
+                    mui.toast('请求超时')
+                }
+            };
+            function successfn(data) {
+            	 var Data = data.model
+			    if(page > Data.totalPages){//当datas.length为0时，表示没有数据了
+			        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
+			    }else{
+                    page = data.model.currPage + 1;
+                    var li;
+                    for (var i = 0; i < data.model.datas.length; i++) {
+                        li = document.createElement('li');
+                        li.className = 'mui-table-view-cell';
+                        
+                        li.innerHTML = '<div class="yj_shouruz"><div class="uz_left"><p><span class="col008">'
+                                        +data.model.datas[i].kehuName+'</span><span><a href="tel://'+data.model.datas[i].decryptPhone+'">'+data.model.datas[i].hidePhone+'</a></span></p><p>'
+                                        +data.model.datas[i].servContent+'</p></div><div class="uz_right"><p>'
+                                        + data.model.datas[i].appointTimeStr + '</p><p>'
+                                        +data.model.datas[i].stateName+'</p></div></div>';
+                                        
+                        document.getElementById('yj_shouru').appendChild(li);
+                    }
+                    if(page > Data.totalPages){//当datas.length为0时，表示没有数据了
+				        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
+				    }else{
+						self.endPullUpToRefresh();//当为false或空时，底部出现正在加载，滑动到下一页
+					}
+                 }   
+             }
+             Kino.ajax('/servAppoint/loadMyServAppoints.do?currPage='+page, successfn, commit);
+}
+
+
     (function($) {
         //阻尼系数
         $.ready(function() {
+        	  if($("#logDiv").length <= 0) {
+        		  return;
+        	  }
             //循环初始化所有下拉刷新，上拉加载。
-                $("#logDiv").pullToRefresh({
+              $("#logDiv").pullToRefresh({
                     up: {
                         callback: function() {
                             var self = this;
-                            setTimeout(function() {
+                            //setTimeout(function() {
                                 var ul = self.element.querySelector('.mui-table-view');
-                                ul.appendChild(createFragment(ul, 5,self));
-                                self.endPullUpToRefresh();
-                            }, 1000);
+                                ul.appendChild(createFragment(ul, self));
+                                self.endPullUpToRefresh(false);
+                            //}, 1000);
                         },
+                        contentnomore:"没有更多数据了，请先添加预约客户",
                         auto:true
                     }
-                });
-            var createFragment = function(ul, count, self) {
-                var fragment = document.createDocumentFragment();
-                (function(){
-                        var commit = {
-                            timeoutFn: function () {
-                                mui.toast('请求超时')
-                            }
-                        };
-                        function successfn(data) {
-                        	 var Data = data.model
-						    if(page > Data.totalPages){//当datas.length为0时，表示没有数据了
-						        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
-						    }else{
-                                page = data.model.currPage + 1;
-                                var li;
-                                for (var i = 0; i < data.model.datas.length; i++) {
-                                    li = document.createElement('li');
-                                    li.className = 'mui-table-view-cell';
-                                    
-                                    li.innerHTML = '<div class="yj_shouruz"><div class="uz_left"><p><span class="col008">'
-                                                    +data.model.datas[i].kehuName+'</span><span><a href="tel://'+data.model.datas[i].phone+'">'+data.model.datas[i].hidePhone+'</a></span></p><p>'
-                                                    +data.model.datas[i].servContent+'</p></div><div class="uz_right"><p>'
-                                                    + data.model.datas[i].appointTimeStr + '</p><p>'
-                                                    +data.model.datas[i].stateName+'</p></div></div>';
-                                                    
-                                    document.getElementById('yj_shouru').appendChild(li);
-                                }
-	                            if(page >= Data.totalPages){//当datas.length为0时，表示没有数据了
-							        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
-							    }else{
-									self.endPullUpToRefresh();//当为false或空时，底部出现正在加载，滑动到下一页
-								}
-		                     }   
-		                 }
-                         Kino.ajax('/servAppoint/loadMyServAppoints.do?currPage='+page, successfn, commit);
-                })()
-                return fragment;
-            };
+              });
         });
     })(mui);
     //我的钱包接口
