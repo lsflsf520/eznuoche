@@ -43,13 +43,18 @@ import com.xyz.tools.common.exception.BaseRuntimeException;
 import com.xyz.tools.common.utils.BaseConfig;
 import com.xyz.tools.common.utils.DateUtil;
 import com.xyz.tools.common.utils.EncryptTools;
+import com.xyz.tools.common.utils.JsonUtil;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.RegexUtil;
 import com.xyz.tools.common.utils.StringUtil;
 import com.xyz.tools.common.utils.ThreadUtil;
 import com.xyz.tools.web.util.LogonUtil;
 import com.xyz.tools.web.util.LogonUtil.SessionUser;
+import com.xyz.tools.web.util.WebUtils;
 import com.xyz.tools.web.util.WxTool;
+
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.error.WxErrorException;
 
 @Controller
 public class IndexController {
@@ -93,6 +98,22 @@ public class IndexController {
 			if(suser == null || suser.needBindPhone()) {
 				mav.addObject("needBindPhone", true);
 				return mav;
+			}
+			String currUrl = ThreadUtil.getCurrUrl();
+			try {
+				WxJsapiSignature signature = WxTool.getWxMpService().createJsapiSignature(currUrl);
+				mav.addObject("signature", signature);
+				
+				String shareUrl = currUrl;
+				if(suser != null && StringUtils.isNotBlank(suser.getMyCode())) {
+					String myCode = suser.getMyCode();
+					String linkUrl = WebUtils.addParam(currUrl, "fcode", myCode);
+					shareUrl = linkUrl;
+				} 
+				mav.addObject("linkUrl", shareUrl);
+				LogUtils.info("signature:%s,shareUrl:%s", JsonUtil.create().toJson(signature), shareUrl);
+			} catch (WxErrorException e) {
+				LogUtils.warn("get wx jsapi signature error", e);
 			}
 		}
 		
