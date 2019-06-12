@@ -7,3 +7,4 @@
 .classpath
 web-logo.iml
 /target/
+rebel.xml
