@@ -344,7 +344,8 @@ public class RegUserService extends AbstractBaseService<Integer, RegUser> {
 		suser.setPhone(user.getPhone());
 		suser.setHeadImg(user.getHeadImg());
 		suser.setNickName(user.getNickName());
-		suser.setPosterCode(user.getMyCode());
+		suser.setMyCode(user.getMyCode());
+		suser.setPosterCode(user.getInviteUid());
 		suser.setUid(user.getId());
 		suser.setUserCls(UserCls.ft);
 		suser.addOtherVal(EzConstant.InviteUidKey, user.getInviteUid());

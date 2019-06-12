@@ -111,7 +111,7 @@ public class IndexController {
 					shareUrl = linkUrl;
 				} 
 				mav.addObject("linkUrl", shareUrl);
-				LogUtils.info("signature:%s,shareUrl:%s", JsonUtil.create().toJson(signature), shareUrl);
+				LogUtils.info("signature:%s,shareUrl:%s,uid:%s,myCode:%s", JsonUtil.create().toJson(signature), shareUrl, suser.getUidInt(), suser.getMyCode());
 			} catch (WxErrorException e) {
 				LogUtils.warn("get wx jsapi signature error", e);
 			}
@@ -123,7 +123,7 @@ public class IndexController {
 	
 	@PostMapping("bindUser")
 	@ResponseBody
-	public ResultModel bindUser(HttpServletRequest request, HttpServletResponse response, String plateNo) {
+	public ResultModel bindUser(HttpServletRequest request, HttpServletResponse response) {
 		String phone = LogonUtil.getMobileOrEmail(request);
 		if(!RegexUtil.isPhone(phone)){
 			return new ResultModel("ILLEGAL_STATE", "数据状态不正常，请重试");
@@ -189,19 +189,19 @@ public class IndexController {
 		suser = regUserService.convertSessionUser(dbData);
 		regUserService.doLogin(request, response, suser, false);
 		
-		userCarService.saveCarNum(suser.getUidInt(), plateNo);
+		//userCarService.saveCarNum(suser.getUidInt(), plateNo);
 		
 		return new ResultModel(true); 
 	}
 
 	@PostMapping("addPlateNo")
 	@ResponseBody
-	public ResultModel addPlateNo(String plateNo) {
+	public ResultModel addPlateNo(String plateNo, String brand) {
 		if(StringUtils.isBlank(plateNo)) {
 			return new ResultModel("ILLEGAL_PARAM", "车牌号不能为空");
 		}
 
-		userCarService.saveCarNum(ThreadUtil.getUidInt(), plateNo);
+		userCarService.saveCarNum(ThreadUtil.getUidInt(), plateNo, brand);
 		
 		return new ResultModel(true);
 	}

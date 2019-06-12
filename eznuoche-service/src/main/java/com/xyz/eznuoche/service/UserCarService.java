@@ -75,15 +75,25 @@ public class UserCarService extends AbstractBaseService<Integer, UserCar> {
     	return this.findByEntity(query, "id.desc");
     }
     
-    public Integer saveCarNum(int uid, String plateNo) {
+    public Integer saveCarNum(int uid, String plateNo, String brand) {
     	if(StringUtils.isBlank(plateNo) || plateNo.length() <= 1) {
     		LogUtils.warn("plateNo cannot be null to save");
     		return 0;
     	}
     	
+    	UserCar query = new UserCar();
+    	query.setUid(uid);
+    	query.setPlateNo(plateNo);
+    	query.setState(CommonStatus.Normal);
+    	UserCar dbData = this.findOne(query);
+    	if(dbData != null) {
+    		throw new BaseRuntimeException("REPEAT_ADD", "当前车牌号已存在，请勿重复添加");
+    	}
+    	
     	UserCar updata = new UserCar();
     	updata.setUid(uid);
     	updata.setPlateNo(plateNo.toUpperCase());
+    	updata.setBrand(StringUtils.isNotBlank(brand) ? brand.toUpperCase() : null);
     	
     	return this.doSave(updata);
     }

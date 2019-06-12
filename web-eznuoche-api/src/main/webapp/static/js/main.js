@@ -161,6 +161,7 @@ $("body").on('tap', '#add_ym', function() {
 		return;
 	}
 	plateNo = $('#mySel').text() + plateNo;
+	var brand = $('#plate_brand').val();
 	// 注册接口
 	function successfn(response, status, xhr) {
 		mui.toast('登记成功');
@@ -169,7 +170,8 @@ $("body").on('tap', '#add_ym', function() {
 	var obj = {
 		type : "POST",
 		data : {
-			plateNo : plateNo
+			plateNo : plateNo,
+			brand : brand
 		},
 		timeoutFn : function() {
 			mui.toast('请求超时')
@@ -179,45 +181,42 @@ $("body").on('tap', '#add_ym', function() {
 })
 
 // 注册
-$("body").on(
-		'tap',
-		'#zhuce_ym',
-		function() {
-			if (checkInput()) {
-				var phone_val = $('#plate_phone').val();
-				var fcode = $('#plate_invite_code').val();
-				if (isNull(fcode)) {
-					fcode = ''
-				}
-				var code_val = $('#plate_smscode').val();
-				var plateNo = $('#plate_number').val() ? $('#mySel').text()
-						+ $('#plate_number').val() : "";
-				// 注册接口
-				function successfn(response, status, xhr) {
-					mui.toast('登记成功');
-					// setTimeout(function() {
-					// window.location.href = 'login.html';
-					// }, 2000);
-					window.location.reload();
-					// $('.ty_login').hide();
-				}
-				var obj = {
-					type : "POST",
-					data : {
-						phone : phone_val,
-						plateNo : plateNo,
-						fcode : fcode,
-						_code_ : code_val,
-						pkey : uuid
-					},
-					timeoutFn : function() {
-						mui.toast('请求超时')
-					}
-				};
-				Kino.ajax('/bindUser.do', successfn, obj);
+$("body").on('tap', '#zhuce_ym', function() {
+	if (checkInput()) {
+		var phone_val = $('#plate_phone').val();
+		var fcode = $('#plate_invite_code').val();
+		if (isNull(fcode)) {
+			fcode = ''
+		}
+		var code_val = $('#plate_smscode').val();
+		// var plateNo = $('#plate_number').val() ? $('#mySel').text()
+		// + $('#plate_number').val() : "";
 
+		// 注册接口
+		function successfn(response, status, xhr) {
+			mui.toast('登记成功');
+			// setTimeout(function() {
+			// window.location.href = 'login.html';
+			// }, 2000);
+			window.location.reload();
+			// $('.ty_login').hide();
+		}
+		var obj = {
+			type : "POST",
+			data : {
+				phone : phone_val,
+				fcode : fcode,
+				_code_ : code_val,
+				pkey : uuid
+			},
+			timeoutFn : function() {
+				mui.toast('请求超时')
 			}
-		});
+		};
+		Kino.ajax('/bindUser.do', successfn, obj);
+
+	}
+});
 
 function S4() {
 	return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);

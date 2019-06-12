@@ -5,6 +5,8 @@
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     
 		<title>EZ挪车-您的停车小助手</title>
+		<meta name="keywords" content="EZ挪车,挪车,挪车服务,车主挪车" />
+        <meta name="description" content="EZ挪车旨在防止车主的手机号被不法分子获取，同时能方便有需要的人联系到车主，前来挪车" />
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -86,7 +88,7 @@
 						<li class="flex">
 							<div class="plate">推荐码</div>
 							<div class="plate_dex flex">
-								<input type="text" placeholder="请输入推荐码，没有可不填写" id="plate_invite_code" style="width: 4rem;" autocomplete="off">
+								<input type="text" placeholder="请输入推荐码，非必填" id="plate_invite_code" style="width: 4rem;" autocomplete="off">
 								<div class="le"><i class="compile"></i></div>
 							</div>
 						</li>
@@ -97,8 +99,7 @@
 						    <li><span style="float:left;">${(item.plateNo)!}</span><a href="/delPlateNo.do?id=${(item.id)!}"><span style="float:right;">移除</span></a></li>
 						   </#list>
 					   </#if>
-					  </#if>
-					    <li class="flex">
+					   <li class="flex">
 							<div class="plate">车牌号码</div>
 							<div class="select flex"  onclick="selectPrefix('#mySel');">
 								<span class="selectVal" id="mySel" onselectstart="return false">湘</span>
@@ -106,10 +107,19 @@
 							</div>
 							<input type="text" id="plate_number" value="" class="plate_number_list" placeholder="请输入车牌号码">
 						</li>
+						<li class="flex">
+							<div class="plate">车辆品牌</div>
+							<div class="plate_dex flex">
+								<input type="text" placeholder="请输入车辆品牌" id="plate_brand" style="width: 4rem;margin-bottom:0px;" autocomplete="off">
+								<div class="le"><i class="compile"></i></div>
+							</div>
+						</li>
+					  </#if>
+					    
 					</ul>
 					
 					<div class="The_false" id="${(!(hasLogon!false) || (needBindPhone!false))?string('zhuce_ym', 'add_ym')}">
-						${(!(hasLogon!false) || (needBindPhone!false))?string('快捷登录', '添加车牌')}
+						${(!(hasLogon!false) || (needBindPhone!false))?string('快捷登录', '添加车辆')}
 					</div>
 					<div align="center" style="margin: 0.2rem; padding-bottom: 0.2rem;">
 					   同意<a href="http://static.siyufank.cn/eznc/agreement.html">《EZ挪车服务协议》</a>
@@ -210,28 +220,31 @@ $(function(){
 })
 </script>
 
+<#if signature??>
 <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
 <script type="text/javascript">
 wx.config({
-    debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
     appId: '${(signature.appId)!}', // 必填，公众号的唯一标识
     timestamp: ${(signature.timestamp)!}, // 必填，生成签名的时间戳
     nonceStr: '${(signature.nonceStr)!}', // 必填，生成签名的随机串
     signature: '${(signature.signature)!}',// 必填，签名
-    jsApiList: ['updateAppMessageShareData'] // 必填，需要使用的JS接口列表
+    jsApiList: ['updateAppMessageShareData','updateTimelineShareData'] // 必填，需要使用的JS接口列表
 });
 
 wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
     wx.updateAppMessageShareData({ 
-        title: '我推荐你使用EZ挪车服务', // 分享标题
-        desc: '保护自己的隐私，在自己的爱车停在妨碍他人的地方是，方便他人联系到自己，EZ挪车应运而生，快来使用吧', // 分享描述
+        title: '我推荐你使用EZ挪车，停车无忧', // 分享标题
+        desc: '防止自己的手机号被不法分子获取，同时能方便有需要的人联系到自己把车挪开，快来使用吧', // 分享描述
         link: '${linkUrl!}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
         imgUrl: 'http://static.siyufank.cn/eznc/ez_qrcode.png', // 分享图标
         success: function () {
           // 设置成功
-          mui.toast("分享成功");
+         // mui.toast("分享成功");
         }
+    });
 });
 </script>
+</#if>
 	</body>
 </html>
