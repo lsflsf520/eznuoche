@@ -305,7 +305,7 @@
 .head_res{
 	width: 100%;
 	height:3.16rem;
-	background-image: url(../image/gerenzhongxinbeijin@2x.png);
+	//background-image: url(../image/gerenzhongxinbeijin@2x.png);
 	background-size: 100% 100%;
 	position: relative;
 }
@@ -1023,7 +1023,7 @@ li.efficacy:before{
 .rwm_zhifu .fuk_btm p{font-size: .28rem;line-height: 1;color: #000000; text-align: center;margin-bottom: .2rem;}
 
 /*我的钱包*/
-.my_deqianb{background:#fff url("../image/gerenzhongxinbeijin@2x.png") no-repeat top center;background-size: 100% 3rem;}
+.my_deqianb{background-size: 100% 3rem;}
 .my_deqianb .nb_topzhye{padding-top: .4rem;text-align: center;font-size: .36rem;color: #FFFFFF;line-height: 1;}
 .my_deqianb .nb_cetzhye{text-align: center;color: #fff;padding-top: .2rem;font-size: .46rem;font-weight: bold;line-height: 1;}
 .my_deqianb .nb_botzhye{padding-top:.45rem;text-align:center;font-size: .28rem;line-height: 1;color: #fff;}

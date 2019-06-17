@@ -131,42 +131,45 @@
 <script src="/static/js/template.js" type="text/javascript" charset="utf-8"></script>
 <script>
 var page = 1;
-var page2 = 1;
+var url = '/servAppoint/loadMyIncomingServAppoints.do?currPage=';
+var url2 = '/servAppoint/loadMyHistoryServAppoints.do?currPage=';
 mui.init();
 
-function createFragment(ul, self) {
+function createFragment(self) {
     var commit = {
                 timeoutFn: function () {
                     mui.toast('请求超时')
                 }
             };
             function successfn(data) {
-            	 var Data = data.model
-			    if(page > Data.totalPages){//当datas.length为0时，表示没有数据了
-			        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
-			    }else{
-                    page = data.model.currPage + 1;
-                    var li;
-                    for (var i = 0; i < data.model.datas.length; i++) {
-                        li = document.createElement('li');
-                        li.className = 'mui-table-view-cell';
-                        
-                        li.innerHTML = '<div class="yj_shouruz"><div class="uz_left"><p><span class="col008">'
-                                        +data.model.datas[i].kehuName+'</span><span><a href="tel://'+data.model.datas[i].decryptPhone+'">'+data.model.datas[i].hidePhone+'</a></span></p><p>'
-                                        +data.model.datas[i].servContent+'</p></div><div class="uz_right"><p>'
-                                        + data.model.datas[i].appointTimeStr + '</p><p>'
-                                        +data.model.datas[i].stateName+'</p></div></div>';
-                                        
-                        document.getElementById('yj_shouru').appendChild(li);
-                    }
-                    if(page > Data.totalPages){//当datas.length为0时，表示没有数据了
-				        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
-				    }else{
-						self.endPullUpToRefresh();//当为false或空时，底部出现正在加载，滑动到下一页
-					}
+                 var li;
+                 for (var i = 0; i < data.model.datas.length; i++) {
+                     li = document.createElement('li');
+                     li.className = 'mui-table-view-cell';
+                     
+                     li.innerHTML = '<div class="yj_shouruz"><div class="uz_left"><p><span class="col008">'
+                                     +data.model.datas[i].kehuName+'</span><span><a href="tel://'+data.model.datas[i].decryptPhone+'">'+data.model.datas[i].hidePhone+'</a></span></p><p>'
+                                     +data.model.datas[i].servContent+'</p></div><div class="uz_right"><p>'
+                                     + data.model.datas[i].appointTimeStr + '</p><p>'
+                                     +data.model.datas[i].stateName+'</p></div></div>';
+                                     
+                     document.getElementById('yj_shouru').appendChild(li);
+                 }
+                 
+                 page = data.model.currPage + 1;
+                 if(page > data.model.totalPages){//当datas.length为0时，表示没有数据了
+   			    	if(url == url2) { //如果当前已经把历史记录查完了，则可以终止查询
+   				        self.endPullUpToRefresh(true);//当为true时，底部出现没有更多数据，并且不能滑动
+                   	} else {
+                   		url = url2;
+                   		page = 1;
+                   		createFragment(self);
+                   	}
+   			     }else{
+					self.endPullUpToRefresh();//当为false或空时，底部出现正在加载，滑动到下一页
                  }   
              }
-             Kino.ajax('/servAppoint/loadMyServAppoints.do?currPage='+page, successfn, commit);
+             Kino.ajax(url + page, successfn, commit);
 }
 
 
@@ -181,10 +184,12 @@ function createFragment(ul, self) {
                     up: {
                         callback: function() {
                             var self = this;
+                            createFragment(self);
+                            
                             //setTimeout(function() {
-                                var ul = self.element.querySelector('.mui-table-view');
-                                ul.appendChild(createFragment(ul, self));
-                                self.endPullUpToRefresh(false);
+                                //var ul = self.element.querySelector('.mui-table-view');
+                                //ul.appendChild(createFragment(ul, self));
+                                //self.endPullUpToRefresh(false);
                             //}, 1000);
                         },
                         contentnomore:"没有更多数据了，请先添加预约客户",
@@ -253,5 +258,31 @@ $("#btn").click(function(){
 });
 </script>
 
+<#if signature??>
+<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.4.0.js"></script>
+<script type="text/javascript">
+wx.config({
+    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+    appId: '${(signature.appId)!}', // 必填，公众号的唯一标识
+    timestamp: ${(signature.timestamp)!}, // 必填，生成签名的时间戳
+    nonceStr: '${(signature.nonceStr)!}', // 必填，生成签名的随机串
+    signature: '${(signature.signature)!}',// 必填，签名
+    jsApiList: ['updateAppMessageShareData','updateTimelineShareData'] // 必填，需要使用的JS接口列表
+});
+
+wx.ready(function () {   //需在用户可能点击分享按钮前就先调用
+    wx.updateAppMessageShareData({ 
+        title: '您贴心的免费客户管理小助手，动动手指来看看吧', // 分享标题
+        desc: '记录客户预约信息，掏出手机即可查看。有客户管理需求的销售人员均可免费使用。', // 分享描述
+        link: '${linkUrl!}', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: 'http://static.siyufank.cn/eznc/serv_logo.png', // 分享图标
+        success: function () {
+          // 设置成功
+         // mui.toast("分享成功");
+        }
+    });
+});
+</script>
+</#if>
 </body>
 </html>

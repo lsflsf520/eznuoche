@@ -150,7 +150,10 @@
     select
 		<include refid="BaseColumnList"/>
 	from serv_appoint
-	where uid = #{uid,jdbcType=INTEGER} and state = 'Checking' order by appoint_time asc
+	where uid = #{uid,jdbcType=INTEGER} and state in 
+	<foreach collection="checkStates" item="item" separator="," open="(" close=")"> 
+		#{item,jdbcType=VARCHAR}
+	</foreach> 
   </select>
   
   <!-- <select id="loadMyAppoints" resultMap="BaseResultMap">

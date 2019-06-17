@@ -95,10 +95,6 @@ public class IndexController {
 		}
 		
 		if(ThreadUtil.isWxClient()){
-			if(suser == null || suser.needBindPhone()) {
-				mav.addObject("needBindPhone", true);
-				return mav;
-			}
 			String currUrl = ThreadUtil.getCurrUrl();
 			try {
 				WxJsapiSignature signature = WxTool.getWxMpService().createJsapiSignature(currUrl);
@@ -114,6 +110,11 @@ public class IndexController {
 				LogUtils.info("signature:%s,shareUrl:%s,uid:%s,myCode:%s", JsonUtil.create().toJson(signature), shareUrl, suser.getUidInt(), suser.getMyCode());
 			} catch (WxErrorException e) {
 				LogUtils.warn("get wx jsapi signature error", e);
+			}
+			
+			if(suser == null || suser.needBindPhone()) {
+				mav.addObject("needBindPhone", true);
+				return mav;
 			}
 		}
 		

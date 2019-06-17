@@ -13,12 +13,17 @@ import com.xyz.tools.common.bean.ResultModel;
 import com.xyz.tools.common.constant.CheckState;
 import com.xyz.tools.common.exception.BaseRuntimeException;
 import com.xyz.tools.common.utils.EncryptTools;
+import com.xyz.tools.common.utils.JsonUtil;
 import com.xyz.tools.common.utils.LogUtils;
 import com.xyz.tools.common.utils.RegexUtil;
 import com.xyz.tools.common.utils.ThreadUtil;
 import com.xyz.tools.db.bean.PageData;
 import com.xyz.tools.web.util.LogonUtil;
 import com.xyz.tools.web.util.LogonUtil.SessionUser;
+import com.xyz.tools.web.util.WxTool;
+
+import me.chanjar.weixin.common.bean.WxJsapiSignature;
+import me.chanjar.weixin.common.error.WxErrorException;
 
 @Controller
 @RequestMapping("servAppoint")
@@ -42,6 +47,23 @@ public class ServAppointController {
 		}
 		
 		if(ThreadUtil.isWxClient()){
+			String currUrl = ThreadUtil.getCurrUrl();
+			try {
+				WxJsapiSignature signature = WxTool.getWxMpService().createJsapiSignature(currUrl);
+				mav.addObject("signature", signature);
+				
+				String shareUrl = currUrl;
+				/*if(suser != null && StringUtils.isNotBlank(suser.getMyCode())) {
+					String myCode = suser.getMyCode();
+					String linkUrl = WebUtils.addParam(currUrl, "fcode", myCode);
+					shareUrl = linkUrl;
+				} */
+				mav.addObject("linkUrl", shareUrl);
+				LogUtils.info("signature:%s,shareUrl:%s,uid:%s,myCode:%s", JsonUtil.create().toJson(signature), shareUrl, suser.getUidInt(), suser.getMyCode());
+			} catch (WxErrorException e) {
+				LogUtils.warn("get wx jsapi signature error", e);
+			}
+			
 			if(suser == null || suser.needBindPhone()) {
 				mav.addObject("needBindPhone", true);
 				return mav;
@@ -51,10 +73,18 @@ public class ServAppointController {
 		return mav;
 	}
 	
-	@RequestMapping("loadMyServAppoints")
+	@RequestMapping("loadMyIncomingServAppoints")
 	@ResponseBody
-	public ResultModel loadMyServAppointsByPage(int currPage) {
-		PageData<ServAppoint> dataPage = servAppointService.loadMyServAppoints(ThreadUtil.getUidInt(), currPage);
+	public ResultModel loadMyIncomingServAppoints(int currPage) {
+		PageData<ServAppoint> dataPage = servAppointService.loadMyIncomingServAppoints(ThreadUtil.getUidInt(), currPage);
+	
+	    return new ResultModel(dataPage);
+	}
+	
+	@RequestMapping("loadMyHistoryServAppoints")
+	@ResponseBody
+	public ResultModel loadMyHistoryServAppoints(int currPage) {
+		PageData<ServAppoint> dataPage = servAppointService.loadMyHistoryServAppoints(ThreadUtil.getUidInt(), currPage);
 	
 	    return new ResultModel(dataPage);
 	}
