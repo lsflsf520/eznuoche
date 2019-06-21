@@ -171,8 +171,11 @@ public class IndexController {
 					} 
 				}
 				
-				inviteUidStr = RegUserService.buildInviteUid(inviter);
-				inviteUid = inviter.getId();
+				if(inviter != null) {
+					inviteUidStr = RegUserService.buildInviteUid(inviter);
+					
+					inviteUid = inviter.getId();
+				}
 			}
 			
 			dbData = regUserService.doReg4ChannelUser(phone, channelUser == null || StringUtils.isBlank(channelUser.getNickName()) 
@@ -201,6 +204,8 @@ public class IndexController {
 		if(StringUtils.isBlank(plateNo)) {
 			return new ResultModel("ILLEGAL_PARAM", "车牌号不能为空");
 		}
+		
+		plateNo = plateNo.replace(" ", ""); //去掉空格
 
 		userCarService.saveCarNum(ThreadUtil.getUidInt(), plateNo, brand);
 		
@@ -236,6 +241,8 @@ public class IndexController {
 		if(!RegexUtil.isPhone(phone)){
 			return new ResultModel("ILLEGAL_PARAM", "手机号不正确");
 		}
+		
+		plateNo = plateNo.replace(" ", ""); //去掉空格
 		
 		OfflineUserCar dbData = offlineUserCarService.loadByPlateNo(plateNo);
 		if(dbData != null) {
