@@ -235,18 +235,19 @@ public class IndexController {
 	@ResponseBody
 	public ResultModel offlinePlateNo(String plateNo, String phone, String carBrand,
 			                         String province, String city, String county, String detailAddr) {
-		if(StringUtils.isBlank(plateNo)) {
-			return new ResultModel("ILLEGAL_PARAM", "车牌号不能为空");
-		}
 		if(!RegexUtil.isPhone(phone)){
 			return new ResultModel("ILLEGAL_PARAM", "手机号不正确");
 		}
-		
-		plateNo = plateNo.replace(" ", ""); //去掉空格
-		
-		OfflineUserCar dbData = offlineUserCarService.loadByPlateNo(plateNo);
-		if(dbData != null) {
-			return new ResultModel("ALREADY_EXIST", "该车牌号已录入");
+		if(StringUtils.isBlank(plateNo)) {
+			plateNo = "新车";
+		} else if(plateNo.length() < 6) {
+			return new ResultModel("ILLEGAL_PARAM", "车牌号长度要大于6位");
+		} else {
+			plateNo = plateNo.replace(" ", ""); //去掉空格
+			OfflineUserCar dbData = offlineUserCarService.loadByPlateNo(plateNo);
+			if(dbData != null) {
+				return new ResultModel("ALREADY_EXIST", "该车牌号已录入");
+			}
 		}
 		
 		OfflineUserCar updata = new OfflineUserCar();

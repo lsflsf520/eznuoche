@@ -91,15 +91,17 @@
 <script type="text/javascript">
 function checkPlateNo() {
 	var plateNo = $("#plateNo").val();
-	if(!plateNo || plateNo.length < 6){
+	if(plateNo && plateNo.length < 6){
 		mui.toast("车牌号格式不正确");
 		return;
 	}
-	Kino.ajax('/plateNo/exists.do?plateNo=' + plateNo, function(response, status, xhr) {
-		$("#errDiv").html("");
-	},{},function(response, status, xhr){
-		$("#errDiv").html(response.resultMsg);
-	});
+	if(plateNo) {
+		Kino.ajax('/plateNo/exists.do?plateNo=' + plateNo, function(response, status, xhr) {
+			$("#errDiv").html("");
+		},{},function(response, status, xhr){
+			$("#errDiv").html(response.resultMsg);
+		});
+	}
 }
 
 $("#btn").click(function(){
@@ -110,7 +112,7 @@ $("#btn").click(function(){
 	var city = $("#city").val();
 	var county = $("#county").val();
 	var detailAddr = $("#detailAddr").val();
-	if(!plateNo || plateNo.length < 6){
+	if(plateNo && plateNo.length < 6){
 		mui.toast("车牌号格式不正确");
 		return;
 	}
