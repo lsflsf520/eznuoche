@@ -2,6 +2,8 @@ package com.xyz.eznuoche.entity;
 
 import java.util.Date;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.xyz.tools.common.utils.EncryptTools;
 import com.xyz.tools.db.bean.BaseEntity;
 
 public class OfflineUserCar extends BaseEntity<Integer> {
@@ -108,5 +110,10 @@ public class OfflineUserCar extends BaseEntity<Integer> {
     @Override
     public Integer getPK() {
         return id;
+    }
+    
+    @JsonIgnore
+    public String getDecyptPhone() {
+    	return EncryptTools.phoneDecrypt(this.phone);
     }
 }

@@ -1,5 +1,7 @@
 package com.xyz.eznuoche.service;
 
+import java.util.List;
+
 import javax.annotation.Resource;
 
 import org.springframework.stereotype.Service;
@@ -43,4 +45,12 @@ public class OfflineUserCarService extends AbstractBaseService<Integer, OfflineU
     public int loadNum() {
     	return this.offlineUserCarDao.loadNum();
     }
+    
+    public List<OfflineUserCar> loadCars(int minId) {
+    	OfflineUserCar query = new OfflineUserCar();
+    	query.addQueryParam("minId", minId);
+    	
+    	return this.findByEntity(query);
+    }
+    
 }
