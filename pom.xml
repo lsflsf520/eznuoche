@@ -33,7 +33,7 @@
 		<dwr.version>3.0.M1</dwr.version>
 		<servlet.version>3.1.0</servlet.version>
 		<jstl.version>1.2</jstl.version>
-		<quartz.version>2.2.1</quartz.version>
+		<quartz.version>2.3.2</quartz.version>
 		<aliyun.version>1.2.2</aliyun.version>
 		<jasperreports.version>6.0.0</jasperreports.version>
 		<poi.version>4.0.1</poi.version>
