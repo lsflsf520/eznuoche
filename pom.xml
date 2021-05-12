@@ -22,7 +22,7 @@
 
 		<!-- 主要依赖库的版本定义 -->
 		<spring.version>4.3.0.RELEASE</spring.version>
-		<springSecurity.version>3.2.7.RELEASE</springSecurity.version>
+		<springSecurity.version>5.2.10.RELEASE</springSecurity.version>
 		<spring-data-jpa.version>1.7.2.RELEASE</spring-data-jpa.version>
 		<junit.version>4.12</junit.version>
 		<java.version>1.8</java.version>
