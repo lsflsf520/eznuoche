@@ -36,7 +36,7 @@
 		<quartz.version>2.2.1</quartz.version>
 		<aliyun.version>1.2.2</aliyun.version>
 		<jasperreports.version>6.0.0</jasperreports.version>
-		<poi.version>4.0.1</poi.version>
+		<poi.version>4.1.1</poi.version>
 		<qiniu.version>6.1.7</qiniu.version>
 		<guava.version>18.0</guava.version>
 		<!-- <jackson.version>2.5.1</jackson.version> -->
